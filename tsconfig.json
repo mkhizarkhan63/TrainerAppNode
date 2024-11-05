@@ -1,0 +1,19 @@
+  {
+    "compilerOptions": {
+      "target": "es2020", // Use a modern JavaScript target
+      "module": "commonjs", // Use ESNext module system
+      "moduleResolution": "node",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist" // Output directory for compiled files
+    },
+    "include": [
+      "src/**/*" // Include all .ts files in the 'src' folder
+    ],
+    "exclude": [
+      "node_modules",
+      "dist" // Exclude 'node_modules' and 'dist'
+    ]
+  }

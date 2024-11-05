@@ -1,0 +1,12 @@
+//restart the service
+pm2 restart id/appname
+
+//shows the logs
+pm2 logs
+
+
+//shows the status
+pm2 status
+
+//clear logs file
+pm2 flush

@@ -1,0 +1,2 @@
+    // "start": "nodemon --watch \"src/**/*\" --exec \"npm run build && node dist/app.js\"",
+"start": "npm run build && node dist/app.js\"",
