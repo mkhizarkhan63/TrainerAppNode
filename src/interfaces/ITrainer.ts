@@ -11,7 +11,7 @@ export interface ITrainerAttributes {
     Description?: string,
     GenderId: number,
     TypeId: number,
-    NationalCertificateId: number,
+    NationalCertificateId?: number,
 
 }
 
@@ -34,7 +34,7 @@ export interface ITrainerDTO {
     Password: string,
     GenderId: number,
     TypeId: number,
-    NationalCertificateId: number,
+    NationalCertificateId?: number,
     LanguagesIds: number[]
 }
 

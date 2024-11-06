@@ -10,9 +10,9 @@ import TypeModel from './TypeModel';
 class UserCertificateModel extends Model<IUserCertificateAttributes> implements IUserCertificateAttributes {
     public Id!: number;
     public certificateId!: number;
-    public clientId!: number;
+    // public clientId!: number;
     public trainerId!: number;
-    public typeId !: number;
+    // public typeId !: number;
 
     public Certificates!: CertificateModel
 }
@@ -33,17 +33,8 @@ UserCertificateModel.init({
         onDelete: "CASCADE",
         onUpdate: "CASCADE"
     },
-    clientId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: ClientModel,
-            key: 'Id'
-        }
-        , onUpdate: "SET NULL",
-        onDelete: "SET NULL"
-    },
+
+
     trainerId: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -55,16 +46,6 @@ UserCertificateModel.init({
         , onUpdate: "SET NULL",
         onDelete: "SET NULL"
     },
-    typeId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: TypeModel,
-            key: 'Id'
-        },
-
-    }
-
 
 }, {
     sequelize,

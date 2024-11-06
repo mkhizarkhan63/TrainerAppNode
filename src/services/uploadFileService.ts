@@ -1,5 +1,5 @@
 import path from "path";
-import { FileType, UserTypeEnum } from "../utils/enums";
+import { FileMode, FileType, UserTypeEnum } from "../utils/enums";
 import fs from 'fs';
 import dotenv from 'dotenv';
 import { CreateCertificates, CreateNationalCertificate, UpdateCertificates, UpdateNationalCertificate } from "./certificateService";
@@ -12,7 +12,6 @@ dotenv.config();
 
 
 
-
 type FileUploadServiceResponse = {
     nationalCertificates?: IUserNationalCertificateDTO | null,
     certificates?: ICertificateDTO[] | undefined | null,
@@ -20,7 +19,7 @@ type FileUploadServiceResponse = {
     status: boolean
 }
 
-export const HandleFileUploadService = async (_fileType: string, _userType: string, _nationalCertificatePath: string, _nationalCertificateId: string = "0", _certificatesId: string[], _cerificatesPath: string[], _trainerId: string, _clientId: string)
+export const HandleFileUploadService = async (_fileMode: string, _fileType: string, _userType: string, _nationalCertificatePath: string, _nationalCertificateId: string = "0", _certificatesId: string[], _cerificatesPath: string[], _trainerId: string, _clientId: string)
     : Promise<FileUploadServiceResponse> => {
 
     const ResponseDTO: FileUploadServiceResponse = {
@@ -37,16 +36,16 @@ export const HandleFileUploadService = async (_fileType: string, _userType: stri
 
                 //Checks filetype
                 if (_fileType.toLowerCase() === FileType.NationalCertificate) {
-                    const nationalcertificates = await uploadNationalCertificateQuery(_nationalCertificateId, _nationalCertificatePath);
+                    const nationalcertificates = await uploadNationalCertificateQuery(_fileMode, parseInt(_trainerId), _nationalCertificateId, _nationalCertificatePath);
                     ResponseDTO.nationalCertificates = nationalcertificates;
                 }
                 if (_fileType.toLowerCase() === FileType.Certificates) {
-                    const certificates = await uploadCertificatesQuery(_cerificatesPath, _certificatesId);
+                    const certificates = await uploadCertificatesQuery(_fileMode, parseInt(_trainerId), _cerificatesPath, _certificatesId);
                     ResponseDTO.certificates = certificates;
                 }
                 if (_fileType.toLowerCase() === FileType.both) {
-                    const nationalcertificates = await uploadNationalCertificateQuery(_nationalCertificateId, _nationalCertificatePath);
-                    const certificates = await uploadCertificatesQuery(_cerificatesPath, _certificatesId);
+                    const nationalcertificates = await uploadNationalCertificateQuery(_fileMode, parseInt(_trainerId), _nationalCertificateId, _nationalCertificatePath);
+                    const certificates = await uploadCertificatesQuery(_fileMode, parseInt(_trainerId), _cerificatesPath, _certificatesId);
                     ResponseDTO.certificates = certificates;
                     ResponseDTO.nationalCertificates = nationalcertificates;
                 }
@@ -69,7 +68,7 @@ export const HandleFileUploadService = async (_fileType: string, _userType: stri
                 //Checks filetype
                 if (_fileType.toLowerCase() === FileType.NationalCertificate) {
 
-                    const nationalCertificates = await uploadNationalCertificateQuery(_nationalCertificateId, _nationalCertificatePath);
+                    const nationalCertificates = await uploadNationalCertificateQuery(_fileMode, parseInt(_trainerId), _nationalCertificateId, _nationalCertificatePath);
                     ResponseDTO.nationalCertificates = nationalCertificates;
 
                 }
@@ -90,17 +89,17 @@ export const HandleFileUploadService = async (_fileType: string, _userType: stri
 }
 
 
-const uploadNationalCertificateQuery = async (_nationalCertificateId: string, _path: string): Promise<IUserNationalCertificateDTO | null> => {
+const uploadNationalCertificateQuery = async (_FileMode: string, _trainerId: number, _nationalCertificateId: string, _path: string): Promise<IUserNationalCertificateDTO | null> => {
 
     try {
 
-        if (_nationalCertificateId === "0") {
+        if (_nationalCertificateId === "0" && _FileMode.toLowerCase() === FileMode.Create) {
 
-            const nationalCertificate = await CreateNationalCertificate(_path);
+            const nationalCertificate = await CreateNationalCertificate(_trainerId, _path);
             return { Id: nationalCertificate?.Id, Name: nationalCertificate?.Name };
         }
 
-        else if (_nationalCertificateId !== "0") {
+        else if (_nationalCertificateId !== "0" && _FileMode.toLowerCase() === FileMode.Update) {
             // await FileRemoved(_path);
             const nationalCertificate = await UpdateNationalCertificate(_path, parseInt(_nationalCertificateId));
             return { Id: nationalCertificate?.Id, Name: nationalCertificate?.Name };
@@ -112,16 +111,16 @@ const uploadNationalCertificateQuery = async (_nationalCertificateId: string, _p
 };
 
 
-const uploadCertificatesQuery = async (_paths: string[], _certificatesId: string[]): Promise<ICertificateDTO[] | null> => {
+const uploadCertificatesQuery = async (_FileMode: string, _trainerId: number, _paths: string[], _certificatesId: string[]): Promise<ICertificateDTO[] | null> => {
     try {
 
-        if (_certificatesId.length === 0) {
+        if (_certificatesId[0] === "0" && _FileMode.toLowerCase() === FileMode.Create) {
             // Create National Certificate ID
-            const certificates = await CreateCertificates(_paths);
+            const certificates = await CreateCertificates(_trainerId, _paths);
             return certificates;
         }
 
-        else if (_certificatesId.length > 0) {
+        else if (_certificatesId.length > 0 && _FileMode.toLowerCase() === FileMode.Update) {
             const certificates = await UpdateCertificates(_paths, _certificatesId);
             return certificates;
         }

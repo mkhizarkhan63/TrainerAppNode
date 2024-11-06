@@ -10,7 +10,7 @@ interface RequestWithFiles extends Request {
 }
 export const FileUploadController = async (req: RequestWithFiles, res: Response) => {
 
-    const { fileType, userType, clientId, trainerId, nationalCertificateId, certificatesIds } = req.body;
+    const { fileType, userType, clientId, trainerId, nationalCertificateId, certificatesIds, fileMode } = req.body;
 
     try {
 
@@ -26,7 +26,7 @@ export const FileUploadController = async (req: RequestWithFiles, res: Response)
         const nationalCertificatePath = nationalCertificateFile ? `${process.env.SERVER_URL}${nationalCertificateFile.path}` : "";
         const certificatePaths = certificateFiles.map(file => `${process.env.SERVER_URL}${file.path}`);
         const certificatesIdsArr = [certificatesIds];
-        const data = await HandleFileUploadService(fileType, userType, nationalCertificatePath, nationalCertificateId, certificatesIdsArr, certificatePaths, trainerId, clientId);
+        const data = await HandleFileUploadService(fileMode, fileType, userType, nationalCertificatePath, nationalCertificateId, certificatesIdsArr, certificatePaths, trainerId, clientId);
 
         res.json(successResponse("Succeed", 200, data));
 

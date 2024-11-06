@@ -7,7 +7,6 @@ exports.trainerRegistration = exports.clientRegistration = void 0;
 const AuthModel_1 = __importDefault(require("../models/AuthModel"));
 const ClientModel_1 = __importDefault(require("../models/ClientModel"));
 const TrainerModel_1 = __importDefault(require("../models/TrainerModel"));
-const UserCertificateModel_1 = __importDefault(require("../models/UserCertificateModel"));
 const UserLanguagesModel_1 = __importDefault(require("../models/UserLanguagesModel"));
 const otpHandler_1 = require("../utils/otpHandler");
 // Function to generate a 6-digit OTP
@@ -61,7 +60,7 @@ const clientRegistration = async (_client) => {
     }
 };
 exports.clientRegistration = clientRegistration;
-const trainerRegistration = async (_trainer, _certificatesIds) => {
+const trainerRegistration = async (_trainer) => {
     const transaction = await TrainerModel_1.default.sequelize?.transaction();
     try {
         const newClient = await TrainerModel_1.default.create({
@@ -73,7 +72,6 @@ const trainerRegistration = async (_trainer, _certificatesIds) => {
             CountryResidence: _trainer.CountryResidence,
             GenderId: _trainer.GenderId,
             TypeId: _trainer.TypeId,
-            NationalCertificateId: _trainer.NationalCertificateId,
         }, { transaction });
         const otp = (0, otpHandler_1.generateOTP)();
         const otpExpires = new Date();
@@ -91,13 +89,6 @@ const trainerRegistration = async (_trainer, _certificatesIds) => {
         }, { transaction });
         // Commit the transaction if everything is successful
         await transaction?.commit();
-        for (const certificates of _certificatesIds) {
-            await UserCertificateModel_1.default.create({
-                certificateId: certificates,
-                trainerId: newClient.Id,
-                typeId: _trainer.TypeId,
-            });
-        }
         let langIds = _trainer.LanguagesIds.toString().split(',');
         for (const langId of langIds) {
             await UserLanguagesModel_1.default.create({

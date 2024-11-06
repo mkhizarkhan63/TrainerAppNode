@@ -21,15 +21,7 @@ router.post('/api/checkotp', CheckOTP)
 router.post('/api/resendotp', ResendOTP)
 
 //public routes
-router.post('/api/registration', uploadCertificates, registration, (err: any, req: Request, res: Response, next: Function) => {
-    // Handle the error from multer
-    if (err instanceof multer.MulterError) {
-        res.status(400).json(errorResponse(err.message, 400, null));
-    } else if (err) {
-        res.status(400).json(errorResponse(err.message, 400, null));
-    }
-    next();
-});
+router.post('/api/registration', registration);
 
 router.get('/api/getLanguages', getAllLanguages);
 

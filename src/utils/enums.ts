@@ -9,3 +9,9 @@ export enum FileType {
     Certificates = "certificates",
     both = "both"
 }
+
+
+export enum FileMode {
+    Create = "1",
+    Update = "2"
+}

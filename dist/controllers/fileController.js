@@ -4,7 +4,7 @@ exports.FileUploadController = void 0;
 const responseUtils_1 = require("../utils/responseUtils");
 const uploadFileService_1 = require("../services/uploadFileService");
 const FileUploadController = async (req, res) => {
-    const { fileType, userType, clientId, trainerId, nationalCertificateId, certificatesIds } = req.body;
+    const { fileType, userType, clientId, trainerId, nationalCertificateId, certificatesIds, fileMode } = req.body;
     try {
         const nationalCertificateFile = req.files && typeof req.files === 'object' && 'nationalCertificate' in req.files
             ? req.files['nationalCertificate'][0]
@@ -15,7 +15,7 @@ const FileUploadController = async (req, res) => {
         const nationalCertificatePath = nationalCertificateFile ? `${process.env.SERVER_URL}${nationalCertificateFile.path}` : "";
         const certificatePaths = certificateFiles.map(file => `${process.env.SERVER_URL}${file.path}`);
         const certificatesIdsArr = [certificatesIds];
-        const data = await (0, uploadFileService_1.HandleFileUploadService)(fileType, userType, nationalCertificatePath, nationalCertificateId, certificatesIdsArr, certificatePaths, trainerId, clientId);
+        const data = await (0, uploadFileService_1.HandleFileUploadService)(fileMode, fileType, userType, nationalCertificatePath, nationalCertificateId, certificatesIdsArr, certificatePaths, trainerId, clientId);
         res.json((0, responseUtils_1.successResponse)("Succeed", 200, data));
     }
     catch (error) {

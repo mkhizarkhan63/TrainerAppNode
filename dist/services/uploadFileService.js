@@ -12,7 +12,7 @@ const certificateService_1 = require("./certificateService");
 const trainerService_1 = require("./trainerService");
 const clientService_1 = require("./clientService");
 dotenv_1.default.config();
-const HandleFileUploadService = async (_fileType, _userType, _nationalCertificatePath, _nationalCertificateId = "0", _certificatesId, _cerificatesPath, _trainerId, _clientId) => {
+const HandleFileUploadService = async (_fileMode, _fileType, _userType, _nationalCertificatePath, _nationalCertificateId = "0", _certificatesId, _cerificatesPath, _trainerId, _clientId) => {
     const ResponseDTO = {
         nationalCertificates: {},
         certificates: [],
@@ -25,16 +25,16 @@ const HandleFileUploadService = async (_fileType, _userType, _nationalCertificat
             if (_userType.toLowerCase() === enums_1.UserTypeEnum.Trainer) {
                 //Checks filetype
                 if (_fileType.toLowerCase() === enums_1.FileType.NationalCertificate) {
-                    const nationalcertificates = await uploadNationalCertificateQuery(_nationalCertificateId, _nationalCertificatePath);
+                    const nationalcertificates = await uploadNationalCertificateQuery(_fileMode, parseInt(_trainerId), _nationalCertificateId, _nationalCertificatePath);
                     ResponseDTO.nationalCertificates = nationalcertificates;
                 }
                 if (_fileType.toLowerCase() === enums_1.FileType.Certificates) {
-                    const certificates = await uploadCertificatesQuery(_cerificatesPath, _certificatesId);
+                    const certificates = await uploadCertificatesQuery(_fileMode, parseInt(_trainerId), _cerificatesPath, _certificatesId);
                     ResponseDTO.certificates = certificates;
                 }
                 if (_fileType.toLowerCase() === enums_1.FileType.both) {
-                    const nationalcertificates = await uploadNationalCertificateQuery(_nationalCertificateId, _nationalCertificatePath);
-                    const certificates = await uploadCertificatesQuery(_cerificatesPath, _certificatesId);
+                    const nationalcertificates = await uploadNationalCertificateQuery(_fileMode, parseInt(_trainerId), _nationalCertificateId, _nationalCertificatePath);
+                    const certificates = await uploadCertificatesQuery(_fileMode, parseInt(_trainerId), _cerificatesPath, _certificatesId);
                     ResponseDTO.certificates = certificates;
                     ResponseDTO.nationalCertificates = nationalcertificates;
                 }
@@ -53,7 +53,7 @@ const HandleFileUploadService = async (_fileType, _userType, _nationalCertificat
             if (_userType.toLowerCase() === enums_1.UserTypeEnum.Client) {
                 //Checks filetype
                 if (_fileType.toLowerCase() === enums_1.FileType.NationalCertificate) {
-                    const nationalCertificates = await uploadNationalCertificateQuery(_nationalCertificateId, _nationalCertificatePath);
+                    const nationalCertificates = await uploadNationalCertificateQuery(_fileMode, parseInt(_trainerId), _nationalCertificateId, _nationalCertificatePath);
                     ResponseDTO.nationalCertificates = nationalCertificates;
                 }
                 return {
@@ -70,13 +70,13 @@ const HandleFileUploadService = async (_fileType, _userType, _nationalCertificat
     };
 };
 exports.HandleFileUploadService = HandleFileUploadService;
-const uploadNationalCertificateQuery = async (_nationalCertificateId, _path) => {
+const uploadNationalCertificateQuery = async (_FileMode, _trainerId, _nationalCertificateId, _path) => {
     try {
-        if (_nationalCertificateId === "0") {
-            const nationalCertificate = await (0, certificateService_1.CreateNationalCertificate)(_path);
+        if (_nationalCertificateId === "0" && _FileMode.toLowerCase() === enums_1.FileMode.Create) {
+            const nationalCertificate = await (0, certificateService_1.CreateNationalCertificate)(_trainerId, _path);
             return { Id: nationalCertificate?.Id, Name: nationalCertificate?.Name };
         }
-        else if (_nationalCertificateId !== "0") {
+        else if (_nationalCertificateId !== "0" && _FileMode.toLowerCase() === enums_1.FileMode.Update) {
             // await FileRemoved(_path);
             const nationalCertificate = await (0, certificateService_1.UpdateNationalCertificate)(_path, parseInt(_nationalCertificateId));
             return { Id: nationalCertificate?.Id, Name: nationalCertificate?.Name };
@@ -87,14 +87,14 @@ const uploadNationalCertificateQuery = async (_nationalCertificateId, _path) => 
         throw error;
     }
 };
-const uploadCertificatesQuery = async (_paths, _certificatesId) => {
+const uploadCertificatesQuery = async (_FileMode, _trainerId, _paths, _certificatesId) => {
     try {
-        if (_certificatesId.length === 0) {
+        if (_certificatesId[0] === "0" && _FileMode.toLowerCase() === enums_1.FileMode.Create) {
             // Create National Certificate ID
-            const certificates = await (0, certificateService_1.CreateCertificates)(_paths);
+            const certificates = await (0, certificateService_1.CreateCertificates)(_trainerId, _paths);
             return certificates;
         }
-        else if (_certificatesId.length > 0) {
+        else if (_certificatesId.length > 0 && _FileMode.toLowerCase() === enums_1.FileMode.Update) {
             const certificates = await (0, certificateService_1.UpdateCertificates)(_paths, _certificatesId);
             return certificates;
         }

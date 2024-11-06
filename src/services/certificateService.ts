@@ -1,65 +1,68 @@
+import sequelize from "../database/connection";
 import { ICertificateAttributes, ICertificateDTO } from "../interfaces/ICertificate";
 import { UserNationalCertificateAttributes } from "../interfaces/IUserNationalCertificate";
 import CertificateModel from "../models/CertificateModel";
+import TrainerModel from "../models/TrainerModel";
+import UserCertificateModel from "../models/UserCertificateModel";
 import UserNationalCertificateModel from "../models/UserNationalCertificateModel";
 
 
-export const uploadNationalCertificate = async (path: string | null) => {
-    const transaction = await UserNationalCertificateModel.sequelize?.transaction();
-    if (path) {
-        try {
+// export const uploadNationalCertificate = async (path: string | null) => {
+//     const transaction = await UserNationalCertificateModel.sequelize?.transaction();
+//     if (path) {
+//         try {
 
-            const newFile = await UserNationalCertificateModel.create({
-                Name: path
-            }, { transaction });
+//             const newFile = await UserNationalCertificateModel.create({
+//                 Name: path
+//             }, { transaction });
 
-            await transaction?.commit();
+//             await transaction?.commit();
 
-            return {
-                message: "File Uploaded Successfully",
-                nationalCertificateFileId: newFile.Id
-            }
-        } catch (error: any) {
-            await transaction?.rollback;
-            throw new Error(error);
-        }
-    }
-    return null
-}
-
-
+//             return {
+//                 message: "File Uploaded Successfully",
+//                 nationalCertificateFileId: newFile.Id
+//             }
+//         } catch (error: any) {
+//             await transaction?.rollback;
+//             throw new Error(error);
+//         }
+//     }
+//     return null
+// }
 
 
-export const uploadCertificates = async (paths: string[]) => {
-    const transaction = await CertificateModel.sequelize?.transaction();
-    const fileIds: number[] = [];
-    if (paths.length > 0) {
-        try {
-            for (const name of paths) {
-                const newFile = await CertificateModel.create({
-                    Name: name
-                }, { transaction });
-                fileIds.push(newFile.Id);
-            }
-            await transaction?.commit();
-            return {
-                message: "File Uploaded Successfully",
-                certificatesIds: fileIds
-            }
 
-        } catch (error: any) {
-            await transaction?.rollback;
-            throw new Error(error);
-        }
-    }
-    return fileIds;
-}
+
+// export const uploadCertificates = async (paths: string[]) => {
+//     const transaction = await CertificateModel.sequelize?.transaction();
+//     const fileIds: number[] = [];
+//     if (paths.length > 0) {
+//         try {
+//             for (const name of paths) {
+//                 const newFile = await CertificateModel.create({
+//                     Name: name
+//                 }, { transaction });
+//                 fileIds.push(newFile.Id);
+//             }
+//             await transaction?.commit();
+//             return {
+//                 message: "File Uploaded Successfully",
+//                 certificatesIds: fileIds
+//             }
+
+//         } catch (error: any) {
+//             await transaction?.rollback;
+//             throw new Error(error);
+//         }
+//     }
+//     return fileIds;
+// }
 
 //new 
 
 
-export const CreateCertificates = async (paths: string[]): Promise<ICertificateDTO[]> => {
-    const transaction = await CertificateModel.sequelize?.transaction();
+export const CreateCertificates = async (_trainerId: number, paths: string[]): Promise<ICertificateDTO[]> => {
+    const transaction = await sequelize?.transaction();
     const files: ICertificateDTO[] = [];
     if (paths.length > 0) {
         try {
@@ -68,6 +71,14 @@ export const CreateCertificates = async (paths: string[]): Promise<ICertificateD
                     Name: name
                 }, { transaction });
                 files.push({ Id: newFile.Id, Name: newFile.Name });
+            }
+            for (const item of files) {
+                if (item.Id) {
+                    await UserCertificateModel.create({
+                        certificateId: item.Id,
+                        trainerId: _trainerId,
+                    }, { transaction });
+                }
             }
             await transaction?.commit();
             return files;
@@ -81,7 +92,7 @@ export const CreateCertificates = async (paths: string[]): Promise<ICertificateD
 }
 
 export const UpdateCertificates = async (paths: string[], _certificatesId: string[]): Promise<ICertificateDTO[]> => {
-    const transaction = await CertificateModel.sequelize?.transaction();
+    const transaction = await sequelize?.transaction();
     const files: ICertificateDTO[] = [];
 
     // Ensure the lengths of paths and _certificatesId match
@@ -118,14 +129,15 @@ export const UpdateCertificates = async (paths: string[], _certificatesId: strin
 
 
 
-export const CreateNationalCertificate = async (path: string): Promise<UserNationalCertificateAttributes | null> => {
-    const transaction = await UserNationalCertificateModel.sequelize?.transaction();
+export const CreateNationalCertificate = async (_trainerId: number, path: string): Promise<UserNationalCertificateAttributes | null> => {
+    const transaction = await sequelize?.transaction();
     try {
 
         const newFile = await UserNationalCertificateModel.create({
             Name: path
         }, { transaction });
 
+        await TrainerModel.update({ NationalCertificateId: newFile.Id }, { where: { Id: _trainerId }, transaction });
         await transaction?.commit();
 
         return {
@@ -139,7 +151,7 @@ export const CreateNationalCertificate = async (path: string): Promise<UserNatio
 }
 
 export const UpdateNationalCertificate = async (_path: string, _nationalCertificateId: number): Promise<UserNationalCertificateAttributes | null> => {
-    const transaction = await UserNationalCertificateModel.sequelize?.transaction();
+    const transaction = await sequelize?.transaction();
     try {
 
         const newFile = await UserNationalCertificateModel.update(

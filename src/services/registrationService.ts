@@ -66,7 +66,7 @@ export const clientRegistration = async (_client: IClientDTO) => {
 
 
 
-export const trainerRegistration = async (_trainer: ITrainerDTO, _certificatesIds: number[]) => {
+export const trainerRegistration = async (_trainer: ITrainerDTO) => {
     const transaction = await TrainerModel.sequelize?.transaction();
     try {
 
@@ -79,7 +79,6 @@ export const trainerRegistration = async (_trainer: ITrainerDTO, _certificatesId
             CountryResidence: _trainer.CountryResidence,
             GenderId: _trainer.GenderId,
             TypeId: _trainer.TypeId,
-            NationalCertificateId: _trainer.NationalCertificateId,
         }, { transaction });
         const otp = generateOTP();
         const otpExpires = new Date();
@@ -101,14 +100,7 @@ export const trainerRegistration = async (_trainer: ITrainerDTO, _certificatesId
         // Commit the transaction if everything is successful
         await transaction?.commit();
 
-        for (const certificates of _certificatesIds) {
-
-            await UserCertificateModel.create({
-                certificateId: certificates,
-                trainerId: newClient.Id,
-                typeId: _trainer.TypeId,
-            });
-        }
+       
         let langIds = _trainer.LanguagesIds.toString().split(',');
         for (const langId of langIds) {
             await UserLanguageModel.create({
