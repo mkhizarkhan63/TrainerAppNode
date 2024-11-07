@@ -1,6 +1,6 @@
 import { ITrainerRequestDTO } from './../interfaces/ITrainer';
 import { ITrainerProfile, ITrainerProfileCreate } from "../interfaces/IProfile";
-import { GenderModel, SocialLinkModel } from "../models/_associations";
+import { AuthModel, GenderModel, SocialLinkModel } from "../models/_associations";
 import CertificateModel from "../models/CertificateModel";
 import LanguageModel from "../models/LanguageModel";
 import PersonalTrainingServicesModel from "../models/PersonalTrainingServicesModel";
@@ -23,6 +23,15 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
         const trainer = await TrainerModel.findOne({
             where: { Id: _trainerId },
             include: [
+
+                {
+
+                    model: AuthModel,
+                    as: "Auth",
+                    attributes: ['EmailAddress']
+
+                },
+
                 {//PersonalTraining Join
                     model: UserPersonalTrainingServicesModel,
                     as: "UserPersonalTrainingServices",
@@ -74,7 +83,7 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
                 {
                     model: GenderModel,
                     as: "Gender",
-                    attributes: ['Gender']
+                    attributes: ['Id', 'Gender']
                 },
                 {
                     model: SocialLinkModel,
@@ -113,8 +122,10 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
 
         const NationalCertificate = trainer.UserNationalCertificates;
 
+        const emailAddress = trainer.Auth ? trainer.Auth.EmailAddress : ""
         const profileObj: ITrainerProfile = {
             Id: trainer.Id,
+            EmailAddress: emailAddress,
             FirstName: trainer.FirstName,
             LastName: trainer.LastName,
             DoB: trainer.DoB,
@@ -124,8 +135,7 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
             Nationality: trainer.Nationality,
             Description: trainer.Description,
             TypeId: trainer.TypeId,
-            NationalCertificate: NationalCertificate.Name,
-            NationalCertificateId: NationalCertificate.Id,
+            NationalCertificate: NationalCertificate,
             PersonalTrainingservices: personalTrainingServices,
             Specializations: specialization,
             Languages: languages,
@@ -166,27 +176,27 @@ export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfil
                 //UserPersonalTrainingservices Delete
                 const isDeleted = await deleteUserPersonalTrainingByTrainerIdQuery(_profile.Id);
 
-                    //personalTrainingservice create
-                    await createUserPersonalTrainingByTrainerIdQuery(_profile.PersonalTrainingservices, _profile.Id);
+                //personalTrainingservice create
+                await createUserPersonalTrainingByTrainerIdQuery(_profile.PersonalTrainingservices, _profile.Id);
             }
 
             if (_profile.Specializations.length > 0) {
                 //specialization delete
                 const isDeleted = await deleteUserSpecializationByTrainerIdQuery(_profile.Id);
-                    //specialization create
-                    await createUserSpecializationByTrainerIdQuery(_profile.Specializations, _profile.Id);
+                //specialization create
+                await createUserSpecializationByTrainerIdQuery(_profile.Specializations, _profile.Id);
             }
 
             if (_profile.Languages.length > 0) {
                 //langauges delete
                 const isDeleted = await deleteUserLangugagesByTrainerId(_profile.Id);
-                    //langauges create
-                    await createUserLanguagesByTrainerId(_profile.Languages, _profile.Id);
+                //langauges create
+                await createUserLanguagesByTrainerId(_profile.Languages, _profile.Id);
             }
 
             if (_profile.SocialLinks.length > 0) {
                 const isDeleted = await deleteSocialLinksByTrainerId(_profile.Id);
-                    await createSocialLinksByTrainerId(_profile.SocialLinks, _profile.Id);
+                await createSocialLinksByTrainerId(_profile.SocialLinks, _profile.Id);
             }
             return true;
         }

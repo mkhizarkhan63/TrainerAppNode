@@ -1,19 +1,33 @@
+
 import { Request, Response } from "express";
 import { successResponse, errorResponse } from "../utils/responseUtils";
-import { createUserSpecializationQuery } from "../services/specializationService";
-import { createUserPersonalTrainingServiceQuery } from "../services/personalTrainingService";
+import { createUserPersonalTrainingServiceQuery, getAllPersonalTrainingServiceQuery, getPersonalTrainingServiceByIdQuery } from "../services/personalTrainingService";
 
-export const createUserSpecialization = async (req: Request, res: Response): Promise<void> => {
+
+
+export const getPersonalTrainerServiceById = async (req: Request, res: Response): Promise<void> => {
 
     try {
-        const { trainerId, clientId, typeId, specializationIds } = req.body;
-        const { data, message } = await createUserSpecializationQuery(trainerId, clientId, typeId, specializationIds);
+        const Id = parseInt(req.body.Id);
+        const { data, message } = await getPersonalTrainingServiceByIdQuery(Id);
         res.json(successResponse(message, 200, data));
     }
     catch (error) {
         res.json(errorResponse("Internal Server Error", 500, error));
     }
 }
+
+export const getAllPersonalTrainingServices = async (req: Request, res: Response): Promise<void> => {
+
+    try {
+        const { data, message } = await getAllPersonalTrainingServiceQuery();
+        res.json(successResponse(message, 200, data));
+    }
+    catch (error) {
+        res.json(errorResponse("Internal Server Error", 500, error));
+    }
+}
+
 
 
 export const createUserPersonalTraining = async (req: Request, res: Response): Promise<void> => {

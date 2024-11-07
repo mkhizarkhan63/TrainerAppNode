@@ -3,9 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTrainer = exports.updateTrainerById = exports.getTrainerById = void 0;
+exports.trainerMediaUpload = exports.createTrainer = exports.updateTrainerById = exports.getTrainerById = void 0;
 const TrainerModel_1 = __importDefault(require("../models/TrainerModel"));
 const connection_1 = __importDefault(require("../database/connection"));
+const TranierMediaModel_1 = __importDefault(require("../models/TranierMediaModel"));
+const enums_1 = require("../utils/enums");
 const getTrainerById = async (Id) => {
     try {
         const trainer = await TrainerModel_1.default.findOne({ where: { Id: Id } });
@@ -64,3 +66,30 @@ const createTrainer = async (_trainer) => {
     }
 };
 exports.createTrainer = createTrainer;
+const trainerMediaUpload = async (_media) => {
+    const transaction = await connection_1.default.transaction();
+    try {
+        if (enums_1.MediaType.PICTURE == _media.mediaType && _media.pictures) {
+            const obj = await TranierMediaModel_1.default.create({ Path: _media.pictures, MediaType: enums_1.MediaType.PICTURE, TrainerId: _media.trainerId });
+            transaction.commit();
+            return obj;
+        }
+        if (enums_1.MediaType.VIDEO == _media.mediaType && _media.videos) {
+            const obj = await TranierMediaModel_1.default.create({ Path: _media.videos, MediaType: enums_1.MediaType.PICTURE, TrainerId: _media.trainerId });
+            transaction.commit();
+            return obj;
+        }
+        if (enums_1.MediaType.AUDIO == _media.mediaType && _media.audios) {
+            const obj = await TranierMediaModel_1.default.create({ Path: _media.audios, MediaType: enums_1.MediaType.PICTURE, TrainerId: _media.trainerId });
+            transaction.commit();
+            return obj;
+        }
+        else
+            return null;
+    }
+    catch (error) {
+        transaction.rollback();
+        throw error;
+    }
+};
+exports.trainerMediaUpload = trainerMediaUpload;

@@ -7,6 +7,7 @@ import UserNationalCertificateModel from "../models/UserNationalCertificateModel
 
 export interface ITrainerProfile {
     Id: number,
+    EmailAddress: string,
     FirstName: string,
     LastName: string,
     MobileNumber: string
@@ -20,8 +21,7 @@ export interface ITrainerProfile {
     Specializations: SpecializationModel[],
     Languages: LanguageModel[],
     Certificates: CertificateModel[],
-    NationalCertificate: string,
-    NationalCertificateId: number,
+    NationalCertificate: UserNationalCertificateModel,
     SocialLinks: SocialLinkModel[]
 }
 

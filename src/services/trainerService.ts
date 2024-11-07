@@ -1,8 +1,9 @@
-import e from "express";
 import { ITrainerRequestDTO } from "../interfaces/ITrainer";
 import TrainerModel from "../models/TrainerModel";
 import sequelize from "../database/connection";
-
+import { ITrainerMediaFileRequest } from "../interfaces/ITrainerMedia";
+import TrainerMediaModel from "../models/TranierMediaModel";
+import { MediaType } from "../utils/enums";
 export const getTrainerById = async (Id: number): Promise<TrainerModel | null> => {
 
     try {
@@ -71,3 +72,33 @@ export const createTrainer = async (_trainer: ITrainerRequestDTO) => {
 
 
 }
+
+export const trainerMediaUpload = async (_media: ITrainerMediaFileRequest) => {
+    const transaction = await sequelize.transaction();
+    try {
+        if (MediaType.PICTURE == _media.mediaType && _media.pictures) {
+            const obj = await TrainerMediaModel.create({ Path: _media.pictures, MediaType: MediaType.PICTURE, TrainerId: _media.trainerId });
+            transaction.commit();
+            return obj;
+        }
+        if (MediaType.VIDEO == _media.mediaType && _media.videos) {
+            const obj = await TrainerMediaModel.create({ Path: _media.videos, MediaType: MediaType.PICTURE, TrainerId: _media.trainerId });
+            transaction.commit();
+            return obj;
+        }
+        if (MediaType.AUDIO == _media.mediaType && _media.audios) {
+            const obj = await TrainerMediaModel.create({ Path: _media.audios, MediaType: MediaType.PICTURE, TrainerId: _media.trainerId });
+            transaction.commit();
+            return obj;
+        }
+        else
+            return null;
+
+
+    } catch (error) {
+        transaction.rollback();
+        throw error;
+    }
+}
+
+

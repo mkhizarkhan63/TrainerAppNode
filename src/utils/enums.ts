@@ -15,3 +15,10 @@ export enum FileMode {
     Create = "1",
     Update = "2"
 }
+
+
+export enum MediaType {
+    PICTURE = 1,
+    VIDEO = 2,
+    AUDIO = 3
+}

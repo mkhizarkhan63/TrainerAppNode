@@ -13,6 +13,7 @@ import UserCertificateModel from "./UserCertificateModel";
 import UserLanguageModel from "./UserLanguagesModel";
 import UserNationalCertificateModel from "./UserNationalCertificateModel";
 import SocialLinkModel from "./SocialLinksModel";
+import TrainerMediaModel from "./TranierMediaModel";
 
 // Define associations between TypeModel and auth
 TypeModel.hasMany(AuthModel, { foreignKey: 'TypeId' });
@@ -38,8 +39,8 @@ TrainerModel.belongsTo(TypeModel, { foreignKey: 'TypeId' });
 TypeModel.hasMany(TrainerModel, { foreignKey: 'TypeId' });
 
 //Define associations between auth and trainer 
-AuthModel.belongsTo(TrainerModel, { foreignKey: 'TrainerId' });
-TrainerModel.hasOne(AuthModel, { foreignKey: 'TrainerId' });
+AuthModel.belongsTo(TrainerModel, { foreignKey: 'TrainerId', as: "Trainer" });
+TrainerModel.hasOne(AuthModel, { foreignKey: 'TrainerId', as: "Auth" });
 
 //Define associations between trainer and gender
 TrainerModel.belongsTo(GenderModel, { foreignKey: 'GenderId', as: "Gender" });
@@ -53,14 +54,14 @@ UserNationalCertificateModel.hasOne(TrainerModel, { foreignKey: 'NationalCertifi
 
 
 //Define association between trainer , ClientModel , certificate , TypeModel towards usercertificate
-TypeModel.hasMany(UserCertificateModel, { foreignKey: 'typeId' });
-UserCertificateModel.belongsTo(TypeModel, { foreignKey: 'typeId' });
+// TypeModel.hasMany(UserCertificateModel, { foreignKey: 'typeId' });
+// UserCertificateModel.belongsTo(TypeModel, { foreignKey: 'typeId' });
 
 CertificateModel.hasMany(UserCertificateModel, { foreignKey: 'certificateId', as: "UserCertificates" });
 UserCertificateModel.belongsTo(CertificateModel, { foreignKey: 'certificateId', as: "Certificates" });
 
-ClientModel.hasMany(UserCertificateModel, { foreignKey: 'clientId' });
-UserCertificateModel.belongsTo(ClientModel, { foreignKey: 'clientId' });
+// ClientModel.hasMany(UserCertificateModel, { foreignKey: 'clientId' });
+// UserCertificateModel.belongsTo(ClientModel, { foreignKey: 'clientId' });
 
 TrainerModel.hasMany(UserCertificateModel, { foreignKey: 'trainerId', as: "UserCertificates" });
 UserCertificateModel.belongsTo(TrainerModel, { foreignKey: 'trainerId', as: "Trainer" });
@@ -98,6 +99,11 @@ UserPersonalTrainingServicesModel.belongsTo(TrainerModel, { foreignKey: 'Trainer
 TrainerModel.hasMany(SocialLinkModel, { foreignKey: "TrainerId", as: "SocialLinks" });
 SocialLinkModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" });
 
+
+//Define association between Trainer and TrainerMedia
+TrainerModel.hasMany(TrainerMediaModel, { foreignKey: "TrainerId", as: "TrainerMedia" });
+TrainerMediaModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" })
+
 export {
     AuthModel,
     CertificateModel,
@@ -113,5 +119,6 @@ export {
     UserSpecializationModel,
     PersonalTrainingServicesModel,
     UserPersonalTrainingServicesModel,
-    SocialLinkModel
+    SocialLinkModel,
+    TrainerMediaModel
 };

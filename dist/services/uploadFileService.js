@@ -11,6 +11,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const certificateService_1 = require("./certificateService");
 const trainerService_1 = require("./trainerService");
 const clientService_1 = require("./clientService");
+const nationalCertificateService_1 = require("./nationalCertificateService");
 dotenv_1.default.config();
 const HandleFileUploadService = async (_fileMode, _fileType, _userType, _nationalCertificatePath, _nationalCertificateId = "0", _certificatesId, _cerificatesPath, _trainerId, _clientId) => {
     const ResponseDTO = {
@@ -73,12 +74,12 @@ exports.HandleFileUploadService = HandleFileUploadService;
 const uploadNationalCertificateQuery = async (_FileMode, _trainerId, _nationalCertificateId, _path) => {
     try {
         if (_nationalCertificateId === "0" && _FileMode.toLowerCase() === enums_1.FileMode.Create) {
-            const nationalCertificate = await (0, certificateService_1.CreateNationalCertificate)(_trainerId, _path);
+            const nationalCertificate = await (0, nationalCertificateService_1.CreateNationalCertificate)(_trainerId, _path);
             return { Id: nationalCertificate?.Id, Name: nationalCertificate?.Name };
         }
         else if (_nationalCertificateId !== "0" && _FileMode.toLowerCase() === enums_1.FileMode.Update) {
             // await FileRemoved(_path);
-            const nationalCertificate = await (0, certificateService_1.UpdateNationalCertificate)(_path, parseInt(_nationalCertificateId));
+            const nationalCertificate = await (0, nationalCertificateService_1.UpdateNationalCertificate)(_path, parseInt(_nationalCertificateId));
             return { Id: nationalCertificate?.Id, Name: nationalCertificate?.Name };
         }
         return null;

@@ -49,3 +49,16 @@ export const createUserLanguagesByTrainerId = async (_langaugesIds: number[], _t
         throw error;
     }
 }
+
+
+export const deleteUserLanguagesByLanguageIdSingleQuery = async (Id: number) => {
+    try {
+        const obj = await UserLanguageModel.destroy({ where: { LanguageId: Id } });
+        if (obj > 0)
+            return true;
+        else
+            return false
+    } catch (error) {
+
+    }
+}

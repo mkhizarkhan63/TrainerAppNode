@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserLanguagesByTrainerId = exports.deleteUserLangugagesByTrainerId = exports.getAllLanguagesQuery = void 0;
+exports.deleteUserLanguagesByLanguageIdSingleQuery = exports.createUserLanguagesByTrainerId = exports.deleteUserLangugagesByTrainerId = exports.getAllLanguagesQuery = void 0;
 const LanguageModel_1 = __importDefault(require("../models/LanguageModel"));
 const UserLanguagesModel_1 = __importDefault(require("../models/UserLanguagesModel"));
 const connection_1 = __importDefault(require("../database/connection"));
@@ -45,3 +45,15 @@ const createUserLanguagesByTrainerId = async (_langaugesIds, _trainerId) => {
     }
 };
 exports.createUserLanguagesByTrainerId = createUserLanguagesByTrainerId;
+const deleteUserLanguagesByLanguageIdSingleQuery = async (Id) => {
+    try {
+        const obj = await UserLanguagesModel_1.default.destroy({ where: { LanguageId: Id } });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+    }
+    catch (error) {
+    }
+};
+exports.deleteUserLanguagesByLanguageIdSingleQuery = deleteUserLanguagesByLanguageIdSingleQuery;

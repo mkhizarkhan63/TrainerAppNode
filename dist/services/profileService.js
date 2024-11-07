@@ -26,6 +26,11 @@ const getTrainerProfileData = async (_trainerId) => {
             where: { Id: _trainerId },
             include: [
                 {
+                    model: _associations_1.AuthModel,
+                    as: "Auth",
+                    attributes: ['EmailAddress']
+                },
+                {
                     model: UserPersonalTrainingServicesModel_1.default,
                     as: "UserPersonalTrainingServices",
                     include: [
@@ -76,7 +81,7 @@ const getTrainerProfileData = async (_trainerId) => {
                 {
                     model: _associations_1.GenderModel,
                     as: "Gender",
-                    attributes: ['Gender']
+                    attributes: ['Id', 'Gender']
                 },
                 {
                     model: _associations_1.SocialLinkModel,
@@ -105,8 +110,10 @@ const getTrainerProfileData = async (_trainerId) => {
         });
         const { Gender } = trainer.Gender;
         const NationalCertificate = trainer.UserNationalCertificates;
+        const emailAddress = trainer.Auth ? trainer.Auth.EmailAddress : "";
         const profileObj = {
             Id: trainer.Id,
+            EmailAddress: emailAddress,
             FirstName: trainer.FirstName,
             LastName: trainer.LastName,
             DoB: trainer.DoB,
@@ -116,8 +123,7 @@ const getTrainerProfileData = async (_trainerId) => {
             Nationality: trainer.Nationality,
             Description: trainer.Description,
             TypeId: trainer.TypeId,
-            NationalCertificate: NationalCertificate.Name,
-            NationalCertificateId: NationalCertificate.Id,
+            NationalCertificate: NationalCertificate,
             PersonalTrainingservices: personalTrainingServices,
             Specializations: specialization,
             Languages: languages,

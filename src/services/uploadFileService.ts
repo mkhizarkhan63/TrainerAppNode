@@ -2,11 +2,12 @@ import path from "path";
 import { FileMode, FileType, UserTypeEnum } from "../utils/enums";
 import fs from 'fs';
 import dotenv from 'dotenv';
-import { CreateCertificates, CreateNationalCertificate, UpdateCertificates, UpdateNationalCertificate } from "./certificateService";
+import { CreateCertificates, UpdateCertificates } from "./certificateService";
 import { getTrainerById } from "./trainerService";
 import { getClientById } from "./clientService";
 import { IUserNationalCertificateDTO } from "../interfaces/IUserNationalCertificate";
 import { ICertificateDTO } from "../interfaces/ICertificate";
+import { CreateNationalCertificate, UpdateNationalCertificate } from "./nationalCertificateService";
 
 dotenv.config();
 

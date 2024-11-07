@@ -3,12 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateNationalCertificate = exports.CreateNationalCertificate = exports.UpdateCertificates = exports.CreateCertificates = void 0;
+exports.deleteCertificateByCertificateIdQuery = exports.UpdateCertificates = exports.CreateCertificates = void 0;
 const connection_1 = __importDefault(require("../database/connection"));
 const CertificateModel_1 = __importDefault(require("../models/CertificateModel"));
-const TrainerModel_1 = __importDefault(require("../models/TrainerModel"));
 const UserCertificateModel_1 = __importDefault(require("../models/UserCertificateModel"));
-const UserNationalCertificateModel_1 = __importDefault(require("../models/UserNationalCertificateModel"));
 // export const uploadNationalCertificate = async (path: string | null) => {
 //     const transaction = await UserNationalCertificateModel.sequelize?.transaction();
 //     if (path) {
@@ -110,41 +108,16 @@ const UpdateCertificates = async (paths, _certificatesId) => {
     }
 };
 exports.UpdateCertificates = UpdateCertificates;
-const CreateNationalCertificate = async (_trainerId, path) => {
-    const transaction = await connection_1.default?.transaction();
+const deleteCertificateByCertificateIdQuery = async (Id) => {
     try {
-        const newFile = await UserNationalCertificateModel_1.default.create({
-            Name: path
-        }, { transaction });
-        await TrainerModel_1.default.update({ NationalCertificateId: newFile.Id }, { where: { Id: _trainerId }, transaction });
-        await transaction?.commit();
-        return {
-            Id: newFile.Id,
-            Name: path
-        };
+        const obj = await CertificateModel_1.default.destroy({ where: { Id: Id } });
+        if (obj > 0)
+            return true;
+        else
+            return false;
     }
-    catch (error) {
-        await transaction?.rollback;
-        throw new Error(error);
+    catch (e) {
+        throw e;
     }
 };
-exports.CreateNationalCertificate = CreateNationalCertificate;
-const UpdateNationalCertificate = async (_path, _nationalCertificateId) => {
-    const transaction = await connection_1.default?.transaction();
-    try {
-        const newFile = await UserNationalCertificateModel_1.default.update({ Name: _path }, {
-            where: { Id: _nationalCertificateId },
-            transaction,
-        });
-        await transaction?.commit();
-        return {
-            Name: _path,
-            Id: _nationalCertificateId
-        };
-    }
-    catch (error) {
-        await transaction?.rollback;
-        throw new Error(error);
-    }
-};
-exports.UpdateNationalCertificate = UpdateNationalCertificate;
+exports.deleteCertificateByCertificateIdQuery = deleteCertificateByCertificateIdQuery;
