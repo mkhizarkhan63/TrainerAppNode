@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserPersonalTrainingServiceQuery = exports.getPersonalTrainingServiceByIdQuery = exports.getAllPersonalTrainingServiceQuery = void 0;
+exports.createUserPersonalTrainingByTrainerIdQuery = exports.deleteUserPersonalTrainingByTrainerIdQuery = exports.createUserPersonalTrainingServiceQuery = exports.getPersonalTrainingServiceByIdQuery = exports.getAllPersonalTrainingServiceQuery = void 0;
+const connection_1 = __importDefault(require("../database/connection"));
 const PersonalTrainingServicesModel_1 = __importDefault(require("../models/PersonalTrainingServicesModel"));
 const UserPersonalTrainingServicesModel_1 = __importDefault(require("../models/UserPersonalTrainingServicesModel"));
 const enums_1 = require("../utils/enums");
@@ -66,3 +67,38 @@ const createUserPersonalTrainingServiceQuery = async (_trainerId, _clientId, _ty
     }
 };
 exports.createUserPersonalTrainingServiceQuery = createUserPersonalTrainingServiceQuery;
+const deleteUserPersonalTrainingByTrainerIdQuery = async (_trainerId) => {
+    try {
+        const obj = await UserPersonalTrainingServicesModel_1.default.destroy({
+            where: {
+                TrainerId: _trainerId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.deleteUserPersonalTrainingByTrainerIdQuery = deleteUserPersonalTrainingByTrainerIdQuery;
+const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTrainingservicesIds, _trainerId) => {
+    const transaction = await connection_1.default.transaction();
+    try {
+        // Use a for...of loop to await each create operation
+        for (const item of _PersonalTrainingservicesIds) {
+            await UserPersonalTrainingServicesModel_1.default.create({ PersonalTrainingServiceId: item, TrainerId: _trainerId }, { transaction });
+        }
+        // Commit the transaction after all operations succeed
+        await transaction.commit();
+        return true;
+    }
+    catch (error) {
+        // Rollback the transaction if an error occurs
+        await transaction.rollback();
+        throw error;
+    }
+};
+exports.createUserPersonalTrainingByTrainerIdQuery = createUserPersonalTrainingByTrainerIdQuery;

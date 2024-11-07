@@ -1,3 +1,4 @@
+import { ITrainerRequestDTO } from './../interfaces/ITrainer';
 import { ITrainerProfile, ITrainerProfileCreate } from "../interfaces/IProfile";
 import { GenderModel, SocialLinkModel } from "../models/_associations";
 import CertificateModel from "../models/CertificateModel";
@@ -10,6 +11,11 @@ import UserLanguageModel from "../models/UserLanguagesModel";
 import UserNationalCertificateModel from "../models/UserNationalCertificateModel";
 import UserPersonalTrainingServicesModel from "../models/UserPersonalTrainingServicesModel";
 import UserSpecializationModel from "../models/UserSpecializationModel";
+import { createUserPersonalTrainingByTrainerIdQuery, deleteUserPersonalTrainingByTrainerIdQuery } from "./personalTrainingService";
+import { createUserSpecializationByTrainerIdQuery, deleteUserSpecializationByTrainerIdQuery } from "./specializationService";
+import { updateTrainerById } from "./trainerService";
+import { createUserLanguagesByTrainerId, deleteUserLangugagesByTrainerId } from './languageService';
+import { createSocialLinksByTrainerId, deleteSocialLinksByTrainerId } from './socialLinkService';
 
 
 export const getTrainerProfileData = async (_trainerId: number): Promise<ITrainerProfile | null> => {
@@ -136,56 +142,56 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
 
 
 
-export const CreateOrUpdateTrainerProfile = async (_profile: ITrainerProfileCreate) => {
+export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfileCreate) => {
     try {
 
         //trainer update
-        await TrainerModel.update(
-            {
-                FirstName: _profile.FirstName,
-                LastName: _profile.LastName,
-                MobileNumber: _profile.MobileNumber,
-                DoB: _profile.DoB,
-                CountryResidence: _profile.CountryResidence,
-                Description: _profile.Description,
-                Nationality: _profile.Nationality,
 
-            },
-            {
-                where: {
-                    Id: _profile.Id,
-                },
-            },
-        );
+        const trainerObj: ITrainerRequestDTO = {
+            FirstName: _profile.FirstName,
+            LastName: _profile.LastName,
+            MobileNumber: _profile.MobileNumber,
+            DoB: _profile.DoB,
+            CountryResidence: _profile.CountryResidence,
+            Description: _profile.Description,
+            Nationality: _profile.Nationality,
+            GenderId: _profile.GenderId
+        };
 
+        const trainer = await updateTrainerById(trainerObj, _profile.Id);
 
+        if (trainer) {
 
-        if (_profile.PersonalTrainingservices.length > 0) {
-            //UserPersonalTrainingservices Delete
-            await UserPersonalTrainingServicesModel.destroy({
-                where: {
-                    TrainerId: _profile.Id //trainerId
-                },
-            });
+            if (_profile.PersonalTrainingservices.length > 0) {
+                //UserPersonalTrainingservices Delete
+                const isDeleted = await deleteUserPersonalTrainingByTrainerIdQuery(_profile.Id);
 
-            //personalTrainingservice create
-            _profile.PersonalTrainingservices.forEach(async item => {
-                await UserPersonalTrainingServicesModel.create({ PersonalTrainingServiceId: item, TrainerId: _profile.Id });
-            });
+                    //personalTrainingservice create
+                    await createUserPersonalTrainingByTrainerIdQuery(_profile.PersonalTrainingservices, _profile.Id);
+            }
+
+            if (_profile.Specializations.length > 0) {
+                //specialization delete
+                const isDeleted = await deleteUserSpecializationByTrainerIdQuery(_profile.Id);
+                    //specialization create
+                    await createUserSpecializationByTrainerIdQuery(_profile.Specializations, _profile.Id);
+            }
+
+            if (_profile.Languages.length > 0) {
+                //langauges delete
+                const isDeleted = await deleteUserLangugagesByTrainerId(_profile.Id);
+                    //langauges create
+                    await createUserLanguagesByTrainerId(_profile.Languages, _profile.Id);
+            }
+
+            if (_profile.SocialLinks.length > 0) {
+                const isDeleted = await deleteSocialLinksByTrainerId(_profile.Id);
+                    await createSocialLinksByTrainerId(_profile.SocialLinks, _profile.Id);
+            }
+            return true;
         }
-
-        if (_profile.Specializations.length > 0) {
-            //specialization delete
-            await UserSpecializationModel.destroy({
-                where: {
-                    TrainerId: _profile.Id //trainerId
-                },
-            });
-
-            //specialization create
-            _profile.Specializations.forEach(async id => {
-                await UserSpecializationModel.create({ SpecializationId: id, TrainerId: _profile.Id });
-            })
+        else {
+            return false;
         }
 
     } catch (error) {

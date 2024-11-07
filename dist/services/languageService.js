@@ -3,8 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllLanguagesQuery = void 0;
+exports.createUserLanguagesByTrainerId = exports.deleteUserLangugagesByTrainerId = exports.getAllLanguagesQuery = void 0;
 const LanguageModel_1 = __importDefault(require("../models/LanguageModel"));
+const UserLanguagesModel_1 = __importDefault(require("../models/UserLanguagesModel"));
+const connection_1 = __importDefault(require("../database/connection"));
 const getAllLanguagesQuery = async () => {
     try {
         const languages = await LanguageModel_1.default.findAll();
@@ -15,3 +17,31 @@ const getAllLanguagesQuery = async () => {
     }
 };
 exports.getAllLanguagesQuery = getAllLanguagesQuery;
+const deleteUserLangugagesByTrainerId = async (_trainerId) => {
+    try {
+        const obj = await UserLanguagesModel_1.default.destroy({ where: { TrainerId: _trainerId } });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.deleteUserLangugagesByTrainerId = deleteUserLangugagesByTrainerId;
+const createUserLanguagesByTrainerId = async (_langaugesIds, _trainerId) => {
+    const transaction = await connection_1.default?.transaction();
+    try {
+        for (const item of _langaugesIds) {
+            await UserLanguagesModel_1.default.create({ LanguageId: item, TrainerId: _trainerId }, { transaction });
+        }
+        await transaction.commit();
+        return true;
+    }
+    catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+exports.createUserLanguagesByTrainerId = createUserLanguagesByTrainerId;

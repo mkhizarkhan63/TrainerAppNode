@@ -29,6 +29,7 @@ router.get('/api/getPersonalTrainingServicesById', servicesController_1.getPerso
 router.post('/api/createUserSpecialization', userController_1.createUserSpecialization);
 router.post('/api/createUserPersonalTrainingService', userController_1.createUserPersonalTraining);
 router.get('/api/getProfileById', profileController_1.getTrainerProfile);
+router.post('/api/createTrainerProfile', profileController_1.createTrainerProfile);
 router.post('/api/uploadFile', UploadFileMulter_1.uploadCertificates, fileController_1.FileUploadController, (err, req, res, next) => {
     // Handle the error from multer
     if (err instanceof multer_1.default.MulterError) {

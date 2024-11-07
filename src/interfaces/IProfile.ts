@@ -34,14 +34,11 @@ export interface ITrainerProfileCreate {
     DoB: string,
     Nationality: string,
     CountryResidence: string,
-    Gender: string,
+    GenderId: number,
     Description: string,
     TypeId: number,
     PersonalTrainingservices: number[],
     Specializations: number[],
     Languages: number[],
-    Certificates: string[],
-    NationalCertificate: string,
-    NationalCertificateId: number,
-    SocialLinks: SocialLinkModel[]
+    SocialLinks: string[]
 }

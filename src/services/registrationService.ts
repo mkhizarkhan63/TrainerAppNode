@@ -1,9 +1,8 @@
 import { IClientDTO } from "../interfaces/IClient";
-import { ITrainerDTO } from "../interfaces/ITrainer";
+import { ITrainerResponseDTO } from "../interfaces/ITrainer";
 import AuthModel from "../models/AuthModel";
 import ClientModel from "../models/ClientModel";
 import TrainerModel from "../models/TrainerModel";
-import UserCertificateModel from "../models/UserCertificateModel";
 import UserLanguageModel from "../models/UserLanguagesModel";
 import { generateOTP, sendEmailService } from "../utils/otpHandler";
 
@@ -66,7 +65,7 @@ export const clientRegistration = async (_client: IClientDTO) => {
 
 
 
-export const trainerRegistration = async (_trainer: ITrainerDTO) => {
+export const trainerRegistration = async (_trainer: ITrainerResponseDTO) => {
     const transaction = await TrainerModel.sequelize?.transaction();
     try {
 
@@ -100,7 +99,7 @@ export const trainerRegistration = async (_trainer: ITrainerDTO) => {
         // Commit the transaction if everything is successful
         await transaction?.commit();
 
-       
+
         let langIds = _trainer.LanguagesIds.toString().split(',');
         for (const langId of langIds) {
             await UserLanguageModel.create({

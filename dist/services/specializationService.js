@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserSpecializationQuery = exports.getSpecializationByIdQuery = exports.getAllSpecializationQuery = void 0;
+exports.createUserSpecializationQuery = exports.createUserSpecializationByTrainerIdQuery = exports.deleteUserSpecializationByTrainerIdQuery = exports.getSpecializationByIdQuery = exports.getAllSpecializationQuery = void 0;
+const connection_1 = __importDefault(require("../database/connection"));
 const SpecializationModel_1 = __importDefault(require("../models/SpecializationModel"));
 const UserSpecializationModel_1 = __importDefault(require("../models/UserSpecializationModel"));
 const enums_1 = require("../utils/enums");
@@ -30,6 +31,38 @@ const getSpecializationByIdQuery = async (Id) => {
     }
 };
 exports.getSpecializationByIdQuery = getSpecializationByIdQuery;
+const deleteUserSpecializationByTrainerIdQuery = async (_trainerId) => {
+    try {
+        const obj = await UserSpecializationModel_1.default.destroy({
+            where: {
+                TrainerId: _trainerId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.deleteUserSpecializationByTrainerIdQuery = deleteUserSpecializationByTrainerIdQuery;
+const createUserSpecializationByTrainerIdQuery = async (_specializationIds, _trainerId) => {
+    const transaction = await connection_1.default?.transaction();
+    try {
+        for (const item of _specializationIds) {
+            await UserSpecializationModel_1.default.create({ SpecializationId: item, TrainerId: _trainerId }, { transaction });
+        }
+        await transaction.commit();
+        return true;
+    }
+    catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+exports.createUserSpecializationByTrainerIdQuery = createUserSpecializationByTrainerIdQuery;
 const createUserSpecializationQuery = async (_trainerId, _clientId, _typeId, _specializationIds) => {
     const transaction = await UserSpecializationModel_1.default.sequelize?.transaction();
     try {

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { successResponse, errorResponse } from "../utils/responseUtils";
 import { clientRegistration, trainerRegistration } from "../services/registrationService";
 import { IClientDTO } from "../interfaces/IClient";
-import { ITrainerDTO } from "../interfaces/ITrainer";
+import { ITrainerResponseDTO } from "../interfaces/ITrainer";
 import { UserTypeEnum } from "../utils/enums";
 import { userByEmailExists } from "../services/userService";
 
@@ -14,7 +14,7 @@ export const registration = async (req: Request, res: Response) => {
         if (req.body.typeId === UserTypeEnum.Trainer) {
 
 
-            const trainerDto: ITrainerDTO = {
+            const trainerDto: ITrainerResponseDTO = {
                 FirstName: req.body.firstName,
                 LastName: req.body.lastName,
                 MobileNumber: req.body.mobileNumber,

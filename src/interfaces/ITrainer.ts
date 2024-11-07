@@ -23,7 +23,7 @@ export interface ITrainerAttributes {
 
 
 
-export interface ITrainerDTO {
+export interface ITrainerResponseDTO {
     FirstName: string,
     LastName: string,
     MobileNumber: string
@@ -34,8 +34,21 @@ export interface ITrainerDTO {
     Password: string,
     GenderId: number,
     TypeId: number,
+    Description?: string,
     NationalCertificateId?: number,
     LanguagesIds: number[]
+}
+
+export interface ITrainerRequestDTO {
+    FirstName: string,
+    LastName: string,
+    MobileNumber: string
+    DoB: string,
+    Nationality: string,
+    CountryResidence: string,
+    Description: string,
+    GenderId?: number,
+    TypeId?: number
 }
 
 

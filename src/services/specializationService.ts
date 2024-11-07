@@ -1,3 +1,4 @@
+import sequelize from "../database/connection";
 import SpecializationModel from "../models/SpecializationModel";
 import UserSpecializationModel from "../models/UserSpecializationModel";
 import { UserTypeEnum } from "../utils/enums";
@@ -31,10 +32,47 @@ export const getSpecializationByIdQuery = async (Id: number): Promise<ResponseDT
 }
 
 
+export const deleteUserSpecializationByTrainerIdQuery = async (_trainerId: number): Promise<boolean> => {
+
+    try {
+        const obj = await UserSpecializationModel.destroy({
+            where: {
+                TrainerId: _trainerId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+export const createUserSpecializationByTrainerIdQuery = async (_specializationIds: number[], _trainerId: number) => {
+    const transaction = await sequelize?.transaction();
+    try {
+
+        for (const item of _specializationIds) {
+
+            await UserSpecializationModel.create({ SpecializationId: item, TrainerId: _trainerId }, { transaction });
+        }
+
+
+        await transaction.commit();
+        return true;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+}
+
 export const createUserSpecializationQuery = async (_trainerId: number, _clientId: number, _typeId: string, _specializationIds: number[]): Promise<ResponseDTO> => {
     const transaction = await UserSpecializationModel.sequelize?.transaction();
     try {
-      
+
         if (_typeId.toString() === UserTypeEnum.Trainer) {
             const getAllByTrainerIdExists = await UserSpecializationModel.findAll({ where: { TrainerId: _trainerId } });
 
@@ -55,7 +93,7 @@ export const createUserSpecializationQuery = async (_trainerId: number, _clientI
             if (getAllByTrainerIdExists) {
                 await UserSpecializationModel.destroy({ where: { ClientId: _clientId } });
             }
-            
+
             for (const item of _specializationIds) {
                 await UserSpecializationModel.create({
                     ClientId: _clientId,

@@ -1,3 +1,4 @@
+import sequelize from "../database/connection";
 import PersonalTrainingServicesModel from "../models/PersonalTrainingServicesModel";
 import UserPersonalTrainingServicesModel from "../models/UserPersonalTrainingServicesModel";
 import { UserTypeEnum } from "../utils/enums";
@@ -38,7 +39,7 @@ export const createUserPersonalTrainingServiceQuery = async (_trainerId: number,
             const getAllByTrainerIdExists = await UserPersonalTrainingServicesModel.findAll({ where: { TrainerId: _trainerId } });
             if (getAllByTrainerIdExists)
                 await UserPersonalTrainingServicesModel.destroy({ where: { TrainerId: _trainerId } });
-           
+
             for (const item of _personalTrainingServiceIds) {
                 await UserPersonalTrainingServicesModel.create({
                     TrainerId: _trainerId,
@@ -48,8 +49,8 @@ export const createUserPersonalTrainingServiceQuery = async (_trainerId: number,
         }
         else if (_typeId.toString() === UserTypeEnum.Client) {
             const getAllByTrainerIdExists = await UserPersonalTrainingServicesModel.findAll({ where: { ClientId: _clientId } });
-        if (getAllByTrainerIdExists)
-            await UserPersonalTrainingServicesModel.destroy({ where: { ClientId: _clientId } });
+            if (getAllByTrainerIdExists)
+                await UserPersonalTrainingServicesModel.destroy({ where: { ClientId: _clientId } });
             for (const item of _personalTrainingServiceIds) {
                 await UserPersonalTrainingServicesModel.create({
                     ClientId: _clientId,
@@ -71,3 +72,43 @@ export const createUserPersonalTrainingServiceQuery = async (_trainerId: number,
 
 }
 
+
+export const deleteUserPersonalTrainingByTrainerIdQuery = async (_trainerId: number): Promise<boolean> => {
+    try {
+        const obj = await UserPersonalTrainingServicesModel.destroy({
+            where: {
+                TrainerId: _trainerId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+export const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTrainingservicesIds: number[], _trainerId: number) => {
+    const transaction = await sequelize.transaction();
+
+    try {
+        // Use a for...of loop to await each create operation
+        for (const item of _PersonalTrainingservicesIds) {
+            await UserPersonalTrainingServicesModel.create(
+                { PersonalTrainingServiceId: item, TrainerId: _trainerId },
+                { transaction }
+            );
+        }
+
+        // Commit the transaction after all operations succeed
+        await transaction.commit();
+        return true;
+    } catch (error) {
+        // Rollback the transaction if an error occurs
+        await transaction.rollback();
+        throw error;
+    }
+};

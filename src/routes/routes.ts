@@ -8,7 +8,7 @@ import { errorResponse } from '../utils/responseUtils';
 import { getAllGenders, getAllLanguages } from '../controllers/dropdownController';
 import { getAllPersonalTrainingServices, getAllSpecialization, getPersonalTrainerServiceById, getSpecializationById } from '../controllers/servicesController';
 import { createUserPersonalTraining, createUserSpecialization } from '../controllers/userController';
-import { getTrainerProfile } from '../controllers/profileController';
+import { createTrainerProfile, getTrainerProfile } from '../controllers/profileController';
 import { FileUploadController } from '../controllers/fileController';
 
 
@@ -38,7 +38,7 @@ router.post('/api/createUserSpecialization', createUserSpecialization);
 router.post('/api/createUserPersonalTrainingService', createUserPersonalTraining);
 
 router.get('/api/getProfileById', getTrainerProfile);
-
+router.post('/api/createTrainerProfile', createTrainerProfile);
 router.post('/api/uploadFile', uploadCertificates, FileUploadController, (err: any, req: Request, res: Response, next: Function) => {
     // Handle the error from multer
     if (err instanceof multer.MulterError) {
