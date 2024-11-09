@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UploadUserMedia = void 0;
+exports.DeleteUserMediaByTrainerId = exports.GetUserMediaByTrainerIdAndMediaType = exports.UploadUserMedia = void 0;
 const responseUtils_1 = require("../utils/responseUtils");
 const trainerService_1 = require("../services/trainerService");
 const UploadUserMedia = async (req, res) => {
@@ -37,4 +37,28 @@ const UploadUserMedia = async (req, res) => {
     }
 };
 exports.UploadUserMedia = UploadUserMedia;
-// UploadTrainerMedia
+const GetUserMediaByTrainerIdAndMediaType = async (req, res) => {
+    const { trainerId, mediaType } = req.body;
+    try {
+        const result = await (0, trainerService_1.getTrainerMediaByTrainerId)(trainerId, mediaType);
+        if (result)
+            res.json((0, responseUtils_1.successResponse)("Fetched Successfully!", 200, result));
+        else
+            res.json((0, responseUtils_1.successResponse)("No record found!", 200, null));
+    }
+    catch (error) {
+        res.json((0, responseUtils_1.errorResponse)("Internal Server Error", 500, error));
+    }
+};
+exports.GetUserMediaByTrainerIdAndMediaType = GetUserMediaByTrainerIdAndMediaType;
+const DeleteUserMediaByTrainerId = async (req, res) => {
+    const { mediaType, mediaId, trainerId } = req.body;
+    try {
+        (0, trainerService_1.deleteTrainerMediaByTrainerId)(trainerId, mediaType, mediaId);
+        res.json((0, responseUtils_1.successResponse)("File Deleted Successfully!", 200));
+    }
+    catch (error) {
+        res.json((0, responseUtils_1.errorResponse)("Internal Server Error", 500, error));
+    }
+};
+exports.DeleteUserMediaByTrainerId = DeleteUserMediaByTrainerId;

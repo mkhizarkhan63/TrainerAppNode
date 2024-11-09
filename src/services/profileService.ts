@@ -97,7 +97,6 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
 
         // If trainer not found, return null
         if (!trainer) {
-            console.log("Trainer not found");
             return null;
         }
 

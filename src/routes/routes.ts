@@ -12,7 +12,7 @@ import { deleteUserLanguageByLanguageId, getAllLanguages } from '../controllers/
 import { createUserPersonalTraining, getAllPersonalTrainingServices, getPersonalTrainerServiceById } from '../controllers/personalTrainingController';
 import { createUserSpecialization, getAllSpecialization, getSpecializationById } from '../controllers/specializationController';
 import { deleteCertificateByCertificateId } from '../controllers/certificateController';
-import { UploadUserMedia } from '../controllers/trainerController';
+import { DeleteUserMediaByTrainerId, GetUserMediaByTrainerIdAndMediaType, UploadUserMedia } from '../controllers/trainerController';
 import { UploadTrainerMedia } from '../middleware/UploadTrainerMedia';
 
 
@@ -35,6 +35,7 @@ router.get('/api/getSpecializationById', getSpecializationById);
 router.get('/api/getPersonalTrainingServices', getAllPersonalTrainingServices);
 router.get('/api/getPersonalTrainingServicesById', getPersonalTrainerServiceById);
 router.get('/api/getProfileById', getTrainerProfile);
+router.get('/api/getUserMediaByTrainerIdAndMediaType', GetUserMediaByTrainerIdAndMediaType);
 //#endregion
 
 
@@ -70,6 +71,7 @@ router.post('/api/UploadTrainerMedia', UploadTrainerMedia, UploadUserMedia, (err
 //#region  DELETE
 router.delete('/api/deleteUserLanguageByLanguageId', deleteUserLanguageByLanguageId);
 router.delete('/api/deleteCertificateByCertificateId', deleteCertificateByCertificateId);
+router.delete('/api/deleteUserMediaByTrainerId', DeleteUserMediaByTrainerId);
 
 //#endregion
 

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MediaType = exports.FileMode = exports.FileType = exports.UserTypeEnum = void 0;
+exports.FolderNames = exports.MediaType = exports.FileMode = exports.FileType = exports.UserTypeEnum = void 0;
 var UserTypeEnum;
 (function (UserTypeEnum) {
     UserTypeEnum["Trainer"] = "1";
@@ -23,3 +23,11 @@ var MediaType;
     MediaType[MediaType["VIDEO"] = 2] = "VIDEO";
     MediaType[MediaType["AUDIO"] = 3] = "AUDIO";
 })(MediaType || (exports.MediaType = MediaType = {}));
+var FolderNames;
+(function (FolderNames) {
+    FolderNames["PICTURE"] = "pictures";
+    FolderNames["VIDEO"] = "videos";
+    FolderNames["AUDIO"] = "audios";
+    FolderNames["CERTIFICATES"] = "certificates";
+    FolderNames["NATIONALCERTIFICATES"] = "nationalCertificate";
+})(FolderNames || (exports.FolderNames = FolderNames = {}));

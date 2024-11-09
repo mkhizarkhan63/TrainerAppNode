@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { successResponse, errorResponse } from "../utils/responseUtils";
 import { ITrainerMediaFileRequest } from "../interfaces/ITrainerMedia";
-import { trainerMediaUpload } from "../services/trainerService";
+import { deleteTrainerMediaByTrainerId, getTrainerMediaByTrainerId, trainerMediaUpload } from "../services/trainerService";
+import { FileRemoved } from "../utils/fileHandle";
 
 
 type FileField = Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] } | undefined;
@@ -54,4 +55,29 @@ export const UploadUserMedia = async (req: RequestWithFiles, res: Response): Pro
 }
 
 
-// UploadTrainerMedia
+export const GetUserMediaByTrainerIdAndMediaType = async (req: Request, res: Response) => {
+    const { trainerId, mediaType } = req.body;
+    try {
+
+        const result = await getTrainerMediaByTrainerId(trainerId, mediaType);
+        if (result)
+            res.json(successResponse("Fetched Successfully!", 200, result));
+        else
+            res.json(successResponse("No record found!", 200, null));
+
+    }
+    catch (error) {
+        res.json(errorResponse("Internal Server Error", 500, error));
+    }
+}
+
+export const DeleteUserMediaByTrainerId = async (req: Request, res: Response) => {
+    const { mediaType, mediaId, trainerId } = req.body;
+    try {
+        deleteTrainerMediaByTrainerId(trainerId, mediaType, mediaId);
+        res.json(successResponse("File Deleted Successfully!", 200));
+    }
+    catch (error) {
+        res.json(errorResponse("Internal Server Error", 500, error));
+    }
+}

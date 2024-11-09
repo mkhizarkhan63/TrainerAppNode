@@ -24,7 +24,7 @@ const storage = multer_1.default.diskStorage({
             uploadDir = path_1.default.join(baseDir, 'certificates'); // Directory for other certificates
         }
         // Create the user directory if it doesn't exist
-        fs_1.default.mkdirSync(uploadDir, { recursive: true });
+        fs_1.default.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {

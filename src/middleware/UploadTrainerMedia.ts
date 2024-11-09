@@ -2,6 +2,7 @@ import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { Request, Response } from 'express';
+import { FolderNames } from '../utils/enums';
 
 // Define storage options
 const storage = multer.diskStorage({
@@ -12,17 +13,18 @@ const storage = multer.diskStorage({
         const baseDir = path.join('uploads', req.body.emailAddress);
         let uploadDir = "";
 
-        if (file.fieldname === 'pictures') {
-            uploadDir = path.join(baseDir, 'pictures');
-        } else if (file.fieldname === 'videos') {
-            uploadDir = path.join(baseDir, 'videos');
+        if (file.fieldname === FolderNames.PICTURE) {
+            uploadDir = path.join(baseDir, FolderNames.PICTURE);
+
+        } else if (file.fieldname === FolderNames.VIDEO) {
+            uploadDir = path.join(baseDir, FolderNames.VIDEO);
         }
-        else if (file.fieldname === 'audios') {
-            uploadDir = path.join(baseDir, 'audios');
+        else if (file.fieldname === FolderNames.AUDIO) {
+            uploadDir = path.join(baseDir, FolderNames.AUDIO);
         }
 
         // Create the user directory if it doesn't exist
-        fs.mkdirSync(uploadDir, { recursive: true });
+        fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
 
         cb(null, uploadDir);
     },

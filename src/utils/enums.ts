@@ -22,3 +22,12 @@ export enum MediaType {
     VIDEO = 2,
     AUDIO = 3
 }
+
+
+export enum FolderNames {
+    PICTURE = "pictures",
+    VIDEO = "videos",
+    AUDIO = "audios",
+    CERTIFICATES = "certificates",
+    NATIONALCERTIFICATES = "nationalCertificate"
+}

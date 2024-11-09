@@ -8,7 +8,7 @@ import UserPersonalTrainingServicesModel from './UserPersonalTrainingServicesMod
 import UserSpecializationModel from './UserSpecializationModel';
 import UserLanguageModel from './UserLanguagesModel';
 import UserCertificateModel from './UserCertificateModel';
-import { AuthModel, GenderModel, SocialLinkModel } from './_associations';
+import { AuthModel, GenderModel, SocialLinkModel, TrainerMediaModel } from './_associations';
 
 
 class TrainerModel extends Model<ITrainerAttributes> implements ITrainerAttributes {
@@ -31,6 +31,7 @@ class TrainerModel extends Model<ITrainerAttributes> implements ITrainerAttribut
     public UserNationalCertificates !: UserNationalCertificateModel;
     public Gender!: GenderModel;
     public SocialLinks!: SocialLinkModel[];
+    public TrainerMedia!: TrainerMediaModel[];
     public Auth!: AuthModel;
 }
 

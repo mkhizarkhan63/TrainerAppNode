@@ -31,6 +31,7 @@ router.get('/api/getSpecializationById', specializationController_1.getSpecializ
 router.get('/api/getPersonalTrainingServices', personalTrainingController_1.getAllPersonalTrainingServices);
 router.get('/api/getPersonalTrainingServicesById', personalTrainingController_1.getPersonalTrainerServiceById);
 router.get('/api/getProfileById', profileController_1.getTrainerProfile);
+router.get('/api/getUserMediaByTrainerIdAndMediaType', trainerController_1.GetUserMediaByTrainerIdAndMediaType);
 //#endregion
 //#region POST 
 router.post('/api/registration', registrationController_1.registration);
@@ -61,5 +62,6 @@ router.post('/api/UploadTrainerMedia', UploadTrainerMedia_1.UploadTrainerMedia, 
 //#region  DELETE
 router.delete('/api/deleteUserLanguageByLanguageId', languagesController_1.deleteUserLanguageByLanguageId);
 router.delete('/api/deleteCertificateByCertificateId', certificateController_1.deleteCertificateByCertificateId);
+router.delete('/api/deleteUserMediaByTrainerId', trainerController_1.DeleteUserMediaByTrainerId);
 //#endregion
 module.exports = router;

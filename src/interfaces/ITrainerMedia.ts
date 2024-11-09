@@ -1,3 +1,4 @@
+import TrainerMediaModel from "../models/TranierMediaModel";
 import { MediaType } from "../utils/enums";
 
 
@@ -18,4 +19,9 @@ export interface ITrainerMediaFileRequest {
     videos: string,
     audios: string,
     mediaType: MediaType
+}
+
+export interface ITrainerMediaFileResponse {
+    trainerId: number,
+    trainerMedia: TrainerMediaModel[]
 }

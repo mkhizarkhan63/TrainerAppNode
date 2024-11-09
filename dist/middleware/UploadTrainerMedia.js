@@ -7,6 +7,7 @@ exports.UploadTrainerMedia = void 0;
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const enums_1 = require("../utils/enums");
 // Define storage options
 const storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
@@ -14,17 +15,17 @@ const storage = multer_1.default.diskStorage({
             return cb(new Error("Email address is required to upload files"), '');
         const baseDir = path_1.default.join('uploads', req.body.emailAddress);
         let uploadDir = "";
-        if (file.fieldname === 'pictures') {
-            uploadDir = path_1.default.join(baseDir, 'pictures');
+        if (file.fieldname === enums_1.FolderNames.PICTURE) {
+            uploadDir = path_1.default.join(baseDir, enums_1.FolderNames.PICTURE);
         }
-        else if (file.fieldname === 'videos') {
-            uploadDir = path_1.default.join(baseDir, 'videos');
+        else if (file.fieldname === enums_1.FolderNames.VIDEO) {
+            uploadDir = path_1.default.join(baseDir, enums_1.FolderNames.VIDEO);
         }
-        else if (file.fieldname === 'audios') {
-            uploadDir = path_1.default.join(baseDir, 'audios');
+        else if (file.fieldname === enums_1.FolderNames.AUDIO) {
+            uploadDir = path_1.default.join(baseDir, enums_1.FolderNames.AUDIO);
         }
         // Create the user directory if it doesn't exist
-        fs_1.default.mkdirSync(uploadDir, { recursive: true });
+        fs_1.default.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {

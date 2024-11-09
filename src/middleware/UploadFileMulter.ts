@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
         }
 
         // Create the user directory if it doesn't exist
-        fs.mkdirSync(uploadDir, { recursive: true });
+        fs.mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
 
         cb(null, uploadDir);
     },

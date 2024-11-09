@@ -17,7 +17,7 @@ const port = process.env.PORT || 3001;
 const startServer = async () => {
     await (0, connection_1.testConnection)(); // Call your async function here
     // Sync all models with the database
-    //await sequelize.sync({ alter: true, force: false });
+    //    await sequelize.sync({ alter: true, force: false });
     // Serve files in the 'uploads' folder statically
     app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
     app.use((0, cors_1.default)());
