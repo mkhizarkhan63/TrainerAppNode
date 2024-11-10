@@ -19,6 +19,7 @@ const certificateController_1 = require("../controllers/certificateController");
 const trainerController_1 = require("../controllers/trainerController");
 const UploadTrainerMedia_1 = require("../middleware/UploadTrainerMedia");
 const reviewRatingController_1 = require("../controllers/reviewRatingController");
+const activitiesController_1 = require("../controllers/activitiesController");
 const router = (0, express_1.Router)();
 router.post('/api/auth', authController_1.auth);
 router.post('/api/checkotp', authController_1.CheckOTP);
@@ -34,6 +35,7 @@ router.get('/api/getPersonalTrainingServicesById', personalTrainingController_1.
 router.get('/api/getProfileById', profileController_1.getTrainerProfile);
 router.get('/api/getUserMediaByTrainerIdAndMediaType', trainerController_1.GetUserMediaByTrainerIdAndMediaType);
 router.get('/api/getAllRatingsByTrainerId', reviewRatingController_1.getAllRatingsByTrainerId);
+router.get('/api/getAllActivities', activitiesController_1.getAllActivities);
 //#endregion
 //#region POST 
 router.post('/api/registration', registrationController_1.registration);

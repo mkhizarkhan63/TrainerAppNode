@@ -15,6 +15,7 @@ import UserNationalCertificateModel from "./UserNationalCertificateModel";
 import SocialLinkModel from "./SocialLinksModel";
 import TrainerMediaModel from "./TranierMediaModel";
 import ReviewModel from "./ReviewsModel";
+import ActivitesModel from "./ActivitiesModel";
 
 // Define associations between TypeModel and auth
 TypeModel.hasMany(AuthModel, { foreignKey: 'TypeId' });
@@ -130,5 +131,6 @@ export {
     UserPersonalTrainingServicesModel,
     SocialLinkModel,
     TrainerMediaModel,
-    ReviewModel
+    ReviewModel,
+    ActivitesModel
 };

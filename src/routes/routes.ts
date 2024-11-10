@@ -15,6 +15,7 @@ import { deleteCertificateByCertificateId } from '../controllers/certificateCont
 import { DeleteUserMediaByTrainerId, GetUserMediaByTrainerIdAndMediaType, UploadUserMedia } from '../controllers/trainerController';
 import { UploadTrainerMedia } from '../middleware/UploadTrainerMedia';
 import { createRatingToTrainer, getAllRatingsByTrainerId } from '../controllers/reviewRatingController';
+import { getAllActivities } from '../controllers/activitiesController';
 
 
 const router = Router();
@@ -38,7 +39,7 @@ router.get('/api/getPersonalTrainingServicesById', getPersonalTrainerServiceById
 router.get('/api/getProfileById', getTrainerProfile);
 router.get('/api/getUserMediaByTrainerIdAndMediaType', GetUserMediaByTrainerIdAndMediaType);
 router.get('/api/getAllRatingsByTrainerId', getAllRatingsByTrainerId);
-
+router.get('/api/getAllActivities', getAllActivities);
 //#endregion
 
 
