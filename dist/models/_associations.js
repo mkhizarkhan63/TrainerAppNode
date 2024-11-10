@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TrainerMediaModel = exports.SocialLinkModel = exports.UserPersonalTrainingServicesModel = exports.PersonalTrainingServicesModel = exports.UserSpecializationModel = exports.SpecializationModel = exports.LanguageModel = exports.UserLanguageModel = exports.UserNationalCertificateModel = exports.UserCertificateModel = exports.TypeModel = exports.TrainerModel = exports.GenderModel = exports.ClientModel = exports.CertificateModel = exports.AuthModel = void 0;
+exports.ReviewModel = exports.TrainerMediaModel = exports.SocialLinkModel = exports.UserPersonalTrainingServicesModel = exports.PersonalTrainingServicesModel = exports.UserSpecializationModel = exports.SpecializationModel = exports.LanguageModel = exports.UserLanguageModel = exports.UserNationalCertificateModel = exports.UserCertificateModel = exports.TypeModel = exports.TrainerModel = exports.GenderModel = exports.ClientModel = exports.CertificateModel = exports.AuthModel = void 0;
 const AuthModel_1 = __importDefault(require("./AuthModel"));
 exports.AuthModel = AuthModel_1.default;
 const CertificateModel_1 = __importDefault(require("./CertificateModel"));
@@ -36,6 +36,8 @@ const SocialLinksModel_1 = __importDefault(require("./SocialLinksModel"));
 exports.SocialLinkModel = SocialLinksModel_1.default;
 const TranierMediaModel_1 = __importDefault(require("./TranierMediaModel"));
 exports.TrainerMediaModel = TranierMediaModel_1.default;
+const ReviewsModel_1 = __importDefault(require("./ReviewsModel"));
+exports.ReviewModel = ReviewsModel_1.default;
 // Define associations between TypeModel and auth
 TypeModel_1.default.hasMany(AuthModel_1.default, { foreignKey: 'TypeId' });
 AuthModel_1.default.belongsTo(TypeModel_1.default, { foreignKey: 'TypeId' });
@@ -93,3 +95,8 @@ SocialLinksModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: "Trai
 //Define association between Trainer and TrainerMedia
 TrainerModel_1.default.hasMany(TranierMediaModel_1.default, { foreignKey: "TrainerId", as: "TrainerMedia" });
 TranierMediaModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: "TrainerId", as: "Trainer" });
+//Define association between Review , Trainer, Client
+TrainerModel_1.default.hasMany(ReviewsModel_1.default, { foreignKey: "TrainerId", as: "Review" });
+ReviewsModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: "TrainerId", as: "Trainer" });
+ClientModel_1.default.hasMany(ReviewsModel_1.default, { foreignKey: "ClientId", as: "Review" });
+ReviewsModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: "ClientId", as: "Client" });

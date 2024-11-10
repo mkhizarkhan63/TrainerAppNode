@@ -17,7 +17,7 @@ const startServer = async () => {
     await testConnection(); // Call your async function here
 
     // Sync all models with the database
-    //    await sequelize.sync({ alter: true, force: false });
+     // await sequelize.sync({ alter: true, force: false });
 
     // Serve files in the 'uploads' folder statically
     app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

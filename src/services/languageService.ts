@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import LanguageModel from "../models/LanguageModel";
 import UserLanguageModel from "../models/UserLanguagesModel";
 import { ResponseDTO } from "../utils/responseUtils";

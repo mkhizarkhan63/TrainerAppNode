@@ -14,6 +14,7 @@ import UserLanguageModel from "./UserLanguagesModel";
 import UserNationalCertificateModel from "./UserNationalCertificateModel";
 import SocialLinkModel from "./SocialLinksModel";
 import TrainerMediaModel from "./TranierMediaModel";
+import ReviewModel from "./ReviewsModel";
 
 // Define associations between TypeModel and auth
 TypeModel.hasMany(AuthModel, { foreignKey: 'TypeId' });
@@ -102,7 +103,15 @@ SocialLinkModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer"
 
 //Define association between Trainer and TrainerMedia
 TrainerModel.hasMany(TrainerMediaModel, { foreignKey: "TrainerId", as: "TrainerMedia" });
-TrainerMediaModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" })
+TrainerMediaModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" });
+
+//Define association between Review , Trainer, Client
+TrainerModel.hasMany(ReviewModel, { foreignKey: "TrainerId", as: "Review" });
+ReviewModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" });
+
+ClientModel.hasMany(ReviewModel, { foreignKey: "ClientId", as: "Review" });
+ReviewModel.belongsTo(ClientModel, { foreignKey: "ClientId", as: "Client" });
+
 
 export {
     AuthModel,
@@ -120,5 +129,6 @@ export {
     PersonalTrainingServicesModel,
     UserPersonalTrainingServicesModel,
     SocialLinkModel,
-    TrainerMediaModel
+    TrainerMediaModel,
+    ReviewModel
 };

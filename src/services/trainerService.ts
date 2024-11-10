@@ -139,8 +139,6 @@ export const deleteTrainerMediaByTrainerId = async (_trainerId: number, _mediaTy
             if (trainer) {
                 const media = await getMediaByMediaId(_mediaId);
                 if (media) {
-
-
                     const result = FileRemoved(media.Path);
                     await deleteMediaById(_mediaId);
                     return result

@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { successResponse, errorResponse } from "../utils/responseUtils";
 import { ITrainerMediaFileRequest } from "../interfaces/ITrainerMedia";
 import { deleteTrainerMediaByTrainerId, getTrainerMediaByTrainerId, trainerMediaUpload } from "../services/trainerService";
-import { FileRemoved } from "../utils/fileHandle";
 
 
 type FileField = Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] } | undefined;

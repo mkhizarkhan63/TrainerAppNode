@@ -14,6 +14,7 @@ import { createUserSpecialization, getAllSpecialization, getSpecializationById }
 import { deleteCertificateByCertificateId } from '../controllers/certificateController';
 import { DeleteUserMediaByTrainerId, GetUserMediaByTrainerIdAndMediaType, UploadUserMedia } from '../controllers/trainerController';
 import { UploadTrainerMedia } from '../middleware/UploadTrainerMedia';
+import { createRatingToTrainer, getAllRatingsByTrainerId } from '../controllers/reviewRatingController';
 
 
 const router = Router();
@@ -36,6 +37,8 @@ router.get('/api/getPersonalTrainingServices', getAllPersonalTrainingServices);
 router.get('/api/getPersonalTrainingServicesById', getPersonalTrainerServiceById);
 router.get('/api/getProfileById', getTrainerProfile);
 router.get('/api/getUserMediaByTrainerIdAndMediaType', GetUserMediaByTrainerIdAndMediaType);
+router.get('/api/getAllRatingsByTrainerId', getAllRatingsByTrainerId);
+
 //#endregion
 
 
@@ -64,6 +67,7 @@ router.post('/api/UploadTrainerMedia', UploadTrainerMedia, UploadUserMedia, (err
     next();
 });
 
+router.post('/api/createRatingToTrainerByClientId', createRatingToTrainer);
 //#endregion
 
 
