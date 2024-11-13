@@ -16,6 +16,8 @@ import SocialLinkModel from "./SocialLinksModel";
 import TrainerMediaModel from "./TranierMediaModel";
 import ReviewModel from "./ReviewsModel";
 import ActivitesModel from "./ActivitiesModel";
+import SessionModel from "./SessionsModel";
+import SessionParticipantModel from "./SessionParticipantModel";
 
 // Define associations between TypeModel and auth
 TypeModel.hasMany(AuthModel, { foreignKey: 'TypeId' });
@@ -113,6 +115,27 @@ ReviewModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" });
 ClientModel.hasMany(ReviewModel, { foreignKey: "ClientId", as: "Review" });
 ReviewModel.belongsTo(ClientModel, { foreignKey: "ClientId", as: "Client" });
 
+//Define association between Session, to Trainer, Client , Type
+
+ActivitesModel.hasMany(SessionModel, { foreignKey: "activityId", as: "Sessions" });
+SessionModel.belongsTo(ActivitesModel, { foreignKey: "activityId", as: "Activity" });
+
+TrainerModel.hasMany(SessionModel, { foreignKey: "TrainerId", as: "Sessions" });
+SessionModel.belongsTo(TrainerModel, { foreignKey: "TrainerId", as: "Trainer" });
+
+ClientModel.hasMany(SessionModel, { foreignKey: "ClientId", as: "Sessions" });
+SessionModel.belongsTo(ClientModel, { foreignKey: "ClientId", as: "Client" });
+
+TypeModel.hasMany(SessionModel, { foreignKey: "TypeId", as: "Sessions" });
+SessionModel.belongsTo(TypeModel, { foreignKey: "TypeId", as: "Type" });
+
+//Define association  between SessionParticipant to Session , CLient 
+
+SessionModel.hasMany(SessionParticipantModel, { foreignKey: "SessionId", as: "SessionParticipant" });
+SessionParticipantModel.belongsTo(SessionModel, { foreignKey: "SessionId", as: "Sessions" });
+
+ClientModel.hasMany(SessionParticipantModel, { foreignKey: "ClientId", as: "SessionParticipant" });
+SessionParticipantModel.belongsTo(ClientModel, { foreignKey: "ClientId", as: "Client" })
 
 export {
     AuthModel,
@@ -132,5 +155,7 @@ export {
     SocialLinkModel,
     TrainerMediaModel,
     ReviewModel,
-    ActivitesModel
+    ActivitesModel,
+    SessionModel,
+    SessionParticipantModel
 };

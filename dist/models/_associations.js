@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ActivitesModel = exports.ReviewModel = exports.TrainerMediaModel = exports.SocialLinkModel = exports.UserPersonalTrainingServicesModel = exports.PersonalTrainingServicesModel = exports.UserSpecializationModel = exports.SpecializationModel = exports.LanguageModel = exports.UserLanguageModel = exports.UserNationalCertificateModel = exports.UserCertificateModel = exports.TypeModel = exports.TrainerModel = exports.GenderModel = exports.ClientModel = exports.CertificateModel = exports.AuthModel = void 0;
+exports.SessionParticipantModel = exports.SessionModel = exports.ActivitesModel = exports.ReviewModel = exports.TrainerMediaModel = exports.SocialLinkModel = exports.UserPersonalTrainingServicesModel = exports.PersonalTrainingServicesModel = exports.UserSpecializationModel = exports.SpecializationModel = exports.LanguageModel = exports.UserLanguageModel = exports.UserNationalCertificateModel = exports.UserCertificateModel = exports.TypeModel = exports.TrainerModel = exports.GenderModel = exports.ClientModel = exports.CertificateModel = exports.AuthModel = void 0;
 const AuthModel_1 = __importDefault(require("./AuthModel"));
 exports.AuthModel = AuthModel_1.default;
 const CertificateModel_1 = __importDefault(require("./CertificateModel"));
@@ -40,6 +40,10 @@ const ReviewsModel_1 = __importDefault(require("./ReviewsModel"));
 exports.ReviewModel = ReviewsModel_1.default;
 const ActivitiesModel_1 = __importDefault(require("./ActivitiesModel"));
 exports.ActivitesModel = ActivitiesModel_1.default;
+const SessionsModel_1 = __importDefault(require("./SessionsModel"));
+exports.SessionModel = SessionsModel_1.default;
+const SessionParticipantModel_1 = __importDefault(require("./SessionParticipantModel"));
+exports.SessionParticipantModel = SessionParticipantModel_1.default;
 // Define associations between TypeModel and auth
 TypeModel_1.default.hasMany(AuthModel_1.default, { foreignKey: 'TypeId' });
 AuthModel_1.default.belongsTo(TypeModel_1.default, { foreignKey: 'TypeId' });
@@ -102,3 +106,17 @@ TrainerModel_1.default.hasMany(ReviewsModel_1.default, { foreignKey: "TrainerId"
 ReviewsModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: "TrainerId", as: "Trainer" });
 ClientModel_1.default.hasMany(ReviewsModel_1.default, { foreignKey: "ClientId", as: "Review" });
 ReviewsModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: "ClientId", as: "Client" });
+//Define association between Session, to Trainer, Client , Type
+ActivitiesModel_1.default.hasMany(SessionsModel_1.default, { foreignKey: "activityId", as: "Sessions" });
+SessionsModel_1.default.belongsTo(ActivitiesModel_1.default, { foreignKey: "activityId", as: "Activity" });
+TrainerModel_1.default.hasMany(SessionsModel_1.default, { foreignKey: "TrainerId", as: "Sessions" });
+SessionsModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: "TrainerId", as: "Trainer" });
+ClientModel_1.default.hasMany(SessionsModel_1.default, { foreignKey: "ClientId", as: "Sessions" });
+SessionsModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: "ClientId", as: "Client" });
+TypeModel_1.default.hasMany(SessionsModel_1.default, { foreignKey: "TypeId", as: "Sessions" });
+SessionsModel_1.default.belongsTo(TypeModel_1.default, { foreignKey: "TypeId", as: "Type" });
+//Define association  between SessionParticipant to Session , CLient 
+SessionsModel_1.default.hasMany(SessionParticipantModel_1.default, { foreignKey: "SessionId", as: "SessionParticipant" });
+SessionParticipantModel_1.default.belongsTo(SessionsModel_1.default, { foreignKey: "SessionId", as: "Sessions" });
+ClientModel_1.default.hasMany(SessionParticipantModel_1.default, { foreignKey: "ClientId", as: "SessionParticipant" });
+SessionParticipantModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: "ClientId", as: "Client" });

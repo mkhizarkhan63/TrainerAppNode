@@ -20,6 +20,8 @@ const trainerController_1 = require("../controllers/trainerController");
 const UploadTrainerMedia_1 = require("../middleware/UploadTrainerMedia");
 const reviewRatingController_1 = require("../controllers/reviewRatingController");
 const activitiesController_1 = require("../controllers/activitiesController");
+const sessionsController_1 = require("../controllers/sessionsController");
+const StripeController_1 = require("../controllers/StripeController");
 const router = (0, express_1.Router)();
 router.post('/api/auth', authController_1.auth);
 router.post('/api/checkotp', authController_1.CheckOTP);
@@ -36,6 +38,8 @@ router.get('/api/getProfileById', profileController_1.getTrainerProfile);
 router.get('/api/getUserMediaByTrainerIdAndMediaType', trainerController_1.GetUserMediaByTrainerIdAndMediaType);
 router.get('/api/getAllRatingsByTrainerId', reviewRatingController_1.getAllRatingsByTrainerId);
 router.get('/api/getAllActivities', activitiesController_1.getAllActivities);
+router.get('/api/getMySessionDetailsById', sessionsController_1.getMySessionDetailsById);
+router.get('/api/getAllSessionDetailById', sessionsController_1.getAllSessionDetailById);
 //#endregion
 //#region POST 
 router.post('/api/registration', registrationController_1.registration);
@@ -63,10 +67,15 @@ router.post('/api/UploadTrainerMedia', UploadTrainerMedia_1.UploadTrainerMedia, 
     next();
 });
 router.post('/api/createRatingToTrainerByClientId', reviewRatingController_1.createRatingToTrainer);
+router.post('/api/createSessions', sessionsController_1.createSessions);
+router.post('/api/createBookingSession', sessionsController_1.createBookingSession);
+router.post('/api/updateSessionById', sessionsController_1.updateSessionById);
+router.post('/api/createPayment', StripeController_1.createPayment);
 //#endregion
 //#region  DELETE
 router.delete('/api/deleteUserLanguageByLanguageId', languagesController_1.deleteUserLanguageByLanguageId);
 router.delete('/api/deleteCertificateByCertificateId', certificateController_1.deleteCertificateByCertificateId);
 router.delete('/api/deleteUserMediaByTrainerId', trainerController_1.DeleteUserMediaByTrainerId);
+router.delete('/api/deleteSessionById', sessionsController_1.deleteSessionById);
 //#endregion
 module.exports = router;

@@ -16,6 +16,8 @@ import { DeleteUserMediaByTrainerId, GetUserMediaByTrainerIdAndMediaType, Upload
 import { UploadTrainerMedia } from '../middleware/UploadTrainerMedia';
 import { createRatingToTrainer, getAllRatingsByTrainerId } from '../controllers/reviewRatingController';
 import { getAllActivities } from '../controllers/activitiesController';
+import { createBookingSession, createSessions, deleteSessionById, getAllSessionDetailById, getMySessionDetailsById, updateSessionById } from '../controllers/sessionsController';
+import { createPayment } from '../controllers/StripeController';
 
 
 const router = Router();
@@ -40,6 +42,8 @@ router.get('/api/getProfileById', getTrainerProfile);
 router.get('/api/getUserMediaByTrainerIdAndMediaType', GetUserMediaByTrainerIdAndMediaType);
 router.get('/api/getAllRatingsByTrainerId', getAllRatingsByTrainerId);
 router.get('/api/getAllActivities', getAllActivities);
+router.get('/api/getMySessionDetailsById', getMySessionDetailsById);
+router.get('/api/getAllSessionDetailById', getAllSessionDetailById);
 //#endregion
 
 
@@ -69,6 +73,10 @@ router.post('/api/UploadTrainerMedia', UploadTrainerMedia, UploadUserMedia, (err
 });
 
 router.post('/api/createRatingToTrainerByClientId', createRatingToTrainer);
+router.post('/api/createSessions', createSessions);
+router.post('/api/createBookingSession', createBookingSession);
+router.post('/api/updateSessionById', updateSessionById)
+router.post('/api/createPayment', createPayment)
 //#endregion
 
 
@@ -77,6 +85,7 @@ router.post('/api/createRatingToTrainerByClientId', createRatingToTrainer);
 router.delete('/api/deleteUserLanguageByLanguageId', deleteUserLanguageByLanguageId);
 router.delete('/api/deleteCertificateByCertificateId', deleteCertificateByCertificateId);
 router.delete('/api/deleteUserMediaByTrainerId', DeleteUserMediaByTrainerId);
+router.delete('/api/deleteSessionById', deleteSessionById);
 
 //#endregion
 

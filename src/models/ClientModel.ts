@@ -3,6 +3,7 @@ import sequelize from '../database/connection';
 import Gender from './GenderModel';
 import Type from './TypeModel';
 import { IClientAttributes } from '../interfaces/IClient';
+import SessionModel from './SessionsModel';
 
 
 
@@ -16,7 +17,7 @@ class ClientModel extends Model<IClientAttributes> implements IClientAttributes 
     public CountryResidence!: string;
     public GenderId!: number;
     public TypeId!: number;
-
+    public Sessions!: SessionModel[];
 }
 
 ClientModel.init({
@@ -49,7 +50,7 @@ ClientModel.init({
         type: DataTypes.STRING(45),
         allowNull: false,
     },
-    
+
     GenderId: {
         type: DataTypes.INTEGER,
         allowNull: false,
