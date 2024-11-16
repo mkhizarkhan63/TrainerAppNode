@@ -176,10 +176,10 @@ const getAllSesionByIdGenericQuery = async (_classType, _scheduledDate, _price) 
             let trainer = null;
             let client = null;
             if (session.TrainerId) {
-                trainer = await (0, trainerService_1.getTrainerById)(session.TrainerId);
+                trainer = await (0, trainerService_1.getTrainerByIdQuery)(session.TrainerId);
             }
             if (session.ClientId) {
-                client = await (0, clientService_1.getClientById)(session.ClientId);
+                client = await (0, clientService_1.getClientByIdQuery)(session.ClientId);
             }
             // Add the participant count to each session
             return {

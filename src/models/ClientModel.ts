@@ -4,6 +4,10 @@ import Gender from './GenderModel';
 import Type from './TypeModel';
 import { IClientAttributes } from '../interfaces/IClient';
 import SessionModel from './SessionsModel';
+import UserPersonalTrainingServicesModel from './UserPersonalTrainingServicesModel';
+import UserSpecializationModel from './UserSpecializationModel';
+import GenderModel from './GenderModel';
+import AuthModel from './AuthModel';
 
 
 
@@ -17,7 +21,14 @@ class ClientModel extends Model<IClientAttributes> implements IClientAttributes 
     public CountryResidence!: string;
     public GenderId!: number;
     public TypeId!: number;
+    public location!: string;
+    public ProfileImage!: string;
+
+    public UserPersonalTrainingServices!: UserPersonalTrainingServicesModel[];
+    public UserSpecialization!: UserSpecializationModel[];
     public Sessions!: SessionModel[];
+    public Gender!: GenderModel;
+    public Auth!: AuthModel;
 }
 
 ClientModel.init({
@@ -50,7 +61,10 @@ ClientModel.init({
         type: DataTypes.STRING(45),
         allowNull: false,
     },
-
+    location: {
+        type: DataTypes.JSON,
+        allowNull: true
+    },
     GenderId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -66,9 +80,12 @@ ClientModel.init({
             model: Type,
             key: 'Id'
         }
+    },
+    ProfileImage: {
+        type: DataTypes.STRING(256),
+        allowNull: true,
+        defaultValue: null
     }
-
-
 
 }, {
     sequelize,

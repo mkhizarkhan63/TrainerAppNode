@@ -50,11 +50,11 @@ AuthModel_1.default.belongsTo(TypeModel_1.default, { foreignKey: 'TypeId' });
 // Define associations between ClientModel, auth , TypeModel
 ClientModel_1.default.belongsTo(TypeModel_1.default, { foreignKey: 'TypeId' });
 TypeModel_1.default.hasMany(ClientModel_1.default, { foreignKey: 'TypeId' });
-ClientModel_1.default.belongsTo(GenderModel_1.default, { foreignKey: 'GenderId' });
-GenderModel_1.default.hasMany(ClientModel_1.default, { foreignKey: 'GenderId' });
+ClientModel_1.default.belongsTo(GenderModel_1.default, { foreignKey: 'GenderId', as: "Gender" });
+GenderModel_1.default.hasMany(ClientModel_1.default, { foreignKey: 'GenderId', as: "Client" });
 //Define associations between auth and ClientModel 
-AuthModel_1.default.hasOne(ClientModel_1.default, { foreignKey: 'ClientId' });
-ClientModel_1.default.belongsTo(AuthModel_1.default, { foreignKey: 'ClientId' });
+AuthModel_1.default.hasOne(ClientModel_1.default, { foreignKey: 'ClientId', as: "Client" });
+ClientModel_1.default.belongsTo(AuthModel_1.default, { foreignKey: 'ClientId', as: "Auth" });
 //#region  Trainer Associations
 //define association trainer and TypeModel
 TrainerModel_1.default.belongsTo(TypeModel_1.default, { foreignKey: 'TypeId' });
@@ -85,16 +85,23 @@ TrainerModel_1.default.hasMany(UserLanguagesModel_1.default, { foreignKey: 'Trai
 UserLanguagesModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: 'TrainerId', as: "Trainer" });
 ClientModel_1.default.hasMany(UserLanguagesModel_1.default, { foreignKey: 'ClientId' });
 UserLanguagesModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: 'ClientId' });
-//Define assiciation between Specialization and Trainer towards TranierSpecialization Table
+//Define Specialization between UserSpecialization
 SpecializationModel_1.default.hasMany(UserSpecializationModel_1.default, { foreignKey: 'SpecializationId', as: "UserSpecialization" });
 UserSpecializationModel_1.default.belongsTo(SpecializationModel_1.default, { foreignKey: 'SpecializationId', as: "Specializations" });
+//Define assiciation  Trainer towards TranierSpecialization Table
 TrainerModel_1.default.hasMany(UserSpecializationModel_1.default, { foreignKey: 'TrainerId', as: "UserSpecialization" });
 UserSpecializationModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: 'TrainerId', as: "Trainer" });
-//Define association between Trainer and personalTrainingServices towards TrainerPersonalTrainServices Table
+//Define association  personalTrainingServices towards TrainerPersonalTrainServices Table
 PersonalTrainingServicesModel_1.default.hasMany(UserPersonalTrainingServicesModel_1.default, { foreignKey: 'PersonalTrainingServiceId', as: 'UserPersonalTrainingServices' });
 UserPersonalTrainingServicesModel_1.default.belongsTo(PersonalTrainingServicesModel_1.default, { foreignKey: 'PersonalTrainingServiceId', as: 'PersonalTrainingService' });
+//Define assoc between trainer and userperosnaltrainingservice
 TrainerModel_1.default.hasMany(UserPersonalTrainingServicesModel_1.default, { foreignKey: 'TrainerId', as: "UserPersonalTrainingServices" });
 UserPersonalTrainingServicesModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: 'TrainerId', as: "Trainer" });
+//Define association between client and  specialization , client and UserPersonalTrainingServices
+ClientModel_1.default.hasMany(UserSpecializationModel_1.default, { foreignKey: 'ClientId', as: "UserSpecialization" });
+UserSpecializationModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: 'ClientId', as: "Client" });
+ClientModel_1.default.hasMany(UserPersonalTrainingServicesModel_1.default, { foreignKey: 'ClientId', as: "UserPersonalTrainingServices" });
+UserPersonalTrainingServicesModel_1.default.belongsTo(ClientModel_1.default, { foreignKey: 'ClientId', as: "Client" });
 //Define association between Trainer and SocialLinks
 TrainerModel_1.default.hasMany(SocialLinksModel_1.default, { foreignKey: "TrainerId", as: "SocialLinks" });
 SocialLinksModel_1.default.belongsTo(TrainerModel_1.default, { foreignKey: "TrainerId", as: "Trainer" });

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteUserMediaByTrainerId = exports.GetUserMediaByTrainerIdAndMediaType = exports.UploadUserMedia = void 0;
+exports.getAllTrainers = exports.DeleteUserMediaByTrainerId = exports.GetUserMediaByTrainerIdAndMediaType = exports.UploadUserMedia = void 0;
 const responseUtils_1 = require("../utils/responseUtils");
 const trainerService_1 = require("../services/trainerService");
 const UploadUserMedia = async (req, res) => {
@@ -62,3 +62,13 @@ const DeleteUserMediaByTrainerId = async (req, res) => {
     }
 };
 exports.DeleteUserMediaByTrainerId = DeleteUserMediaByTrainerId;
+const getAllTrainers = async (req, res) => {
+    try {
+        const result = await (0, trainerService_1.getAllTrainerQuery)();
+        res.json((0, responseUtils_1.successResponse)("", 200, result));
+    }
+    catch (error) {
+        res.json((0, responseUtils_1.errorResponse)("Internal Server Error", 500, error));
+    }
+};
+exports.getAllTrainers = getAllTrainers;

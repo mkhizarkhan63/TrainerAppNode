@@ -28,14 +28,14 @@ AuthModel.belongsTo(TypeModel, { foreignKey: 'TypeId' });
 ClientModel.belongsTo(TypeModel, { foreignKey: 'TypeId' });
 TypeModel.hasMany(ClientModel, { foreignKey: 'TypeId' });
 
-ClientModel.belongsTo(GenderModel, { foreignKey: 'GenderId' });
-GenderModel.hasMany(ClientModel, { foreignKey: 'GenderId' });
+ClientModel.belongsTo(GenderModel, { foreignKey: 'GenderId', as: "Gender" });
+GenderModel.hasMany(ClientModel, { foreignKey: 'GenderId', as: "Client" });
 
 
 
 //Define associations between auth and ClientModel 
-AuthModel.hasOne(ClientModel, { foreignKey: 'ClientId' });
-ClientModel.belongsTo(AuthModel, { foreignKey: 'ClientId' });
+AuthModel.hasOne(ClientModel, { foreignKey: 'ClientId', as: "Client" });
+ClientModel.belongsTo(AuthModel, { foreignKey: 'ClientId', as: "Auth" });
 
 //#region  Trainer Associations
 //define association trainer and TypeModel
@@ -81,22 +81,36 @@ ClientModel.hasMany(UserLanguageModel, { foreignKey: 'ClientId' });
 UserLanguageModel.belongsTo(ClientModel, { foreignKey: 'ClientId' });
 
 
-//Define assiciation between Specialization and Trainer towards TranierSpecialization Table
-
+//Define Specialization between UserSpecialization
 SpecializationModel.hasMany(UserSpecializationModel, { foreignKey: 'SpecializationId', as: "UserSpecialization" });
 UserSpecializationModel.belongsTo(SpecializationModel, { foreignKey: 'SpecializationId', as: "Specializations" });
 
+
+//Define assiciation  Trainer towards TranierSpecialization Table
 TrainerModel.hasMany(UserSpecializationModel, { foreignKey: 'TrainerId', as: "UserSpecialization" });
 UserSpecializationModel.belongsTo(TrainerModel, { foreignKey: 'TrainerId', as: "Trainer" });
 
-//Define association between Trainer and personalTrainingServices towards TrainerPersonalTrainServices Table
+
+//Define association  personalTrainingServices towards TrainerPersonalTrainServices Table
 
 PersonalTrainingServicesModel.hasMany(UserPersonalTrainingServicesModel, { foreignKey: 'PersonalTrainingServiceId', as: 'UserPersonalTrainingServices' });
-
 UserPersonalTrainingServicesModel.belongsTo(PersonalTrainingServicesModel, { foreignKey: 'PersonalTrainingServiceId', as: 'PersonalTrainingService' });
 
+//Define assoc between trainer and userperosnaltrainingservice
 TrainerModel.hasMany(UserPersonalTrainingServicesModel, { foreignKey: 'TrainerId', as: "UserPersonalTrainingServices" });
 UserPersonalTrainingServicesModel.belongsTo(TrainerModel, { foreignKey: 'TrainerId', as: "Trainer" });
+
+
+//Define association between client and  specialization , client and UserPersonalTrainingServices
+
+ClientModel.hasMany(UserSpecializationModel, { foreignKey: 'ClientId', as: "UserSpecialization" });
+UserSpecializationModel.belongsTo(ClientModel, { foreignKey: 'ClientId', as: "Client" });
+
+ClientModel.hasMany(UserPersonalTrainingServicesModel, { foreignKey: 'ClientId', as: "UserPersonalTrainingServices" });
+UserPersonalTrainingServicesModel.belongsTo(ClientModel, { foreignKey: 'ClientId', as: "Client" });
+
+
+
 
 //Define association between Trainer and SocialLinks
 

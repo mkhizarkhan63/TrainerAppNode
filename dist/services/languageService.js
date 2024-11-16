@@ -33,8 +33,9 @@ exports.deleteUserLangugagesByTrainerId = deleteUserLangugagesByTrainerId;
 const createUserLanguagesByTrainerId = async (_langaugesIds, _trainerId) => {
     const transaction = await connection_1.default?.transaction();
     try {
-        for (const item of _langaugesIds) {
-            await UserLanguagesModel_1.default.create({ LanguageId: item, TrainerId: _trainerId }, { transaction });
+        const languagesIds = _langaugesIds.split(",");
+        for (const item of languagesIds) {
+            await UserLanguagesModel_1.default.create({ LanguageId: parseInt(item), TrainerId: _trainerId }, { transaction });
         }
         await transaction.commit();
         return true;

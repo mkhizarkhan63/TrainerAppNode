@@ -91,14 +91,15 @@ export const deleteUserPersonalTrainingByTrainerIdQuery = async (_trainerId: num
 
 }
 
-export const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTrainingservicesIds: number[], _trainerId: number) => {
+export const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTrainingservicesIds: string, _trainerId: number) => {
     const transaction = await sequelize.transaction();
 
     try {
         // Use a for...of loop to await each create operation
-        for (const item of _PersonalTrainingservicesIds) {
+        const personalTrainingServicesIds = _PersonalTrainingservicesIds.split(",");
+        for (const item of personalTrainingServicesIds) {
             await UserPersonalTrainingServicesModel.create(
-                { PersonalTrainingServiceId: item, TrainerId: _trainerId },
+                { PersonalTrainingServiceId: parseInt(item), TrainerId: _trainerId },
                 { transaction }
             );
         }
@@ -112,3 +113,47 @@ export const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTraini
         throw error;
     }
 };
+
+//#region  Client
+export const deleteUserPersonalTrainingByClientIdQuery = async (_clientId: number): Promise<boolean> => {
+    try {
+        const obj = await UserPersonalTrainingServicesModel.destroy({
+            where: {
+                ClientId: _clientId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+export const createUserPersonalTrainingByClientIdQuery = async (_PersonalTrainingservicesIds: string, _clientId: number) => {
+    const transaction = await sequelize.transaction();
+
+    try {
+        // Use a for...of loop to await each create operation
+        const personalTrainingServicesIds = _PersonalTrainingservicesIds.split(",");
+        for (const item of personalTrainingServicesIds) {
+            await UserPersonalTrainingServicesModel.create(
+                { PersonalTrainingServiceId: parseInt(item), ClientId: _clientId },
+                { transaction }
+            );
+        }
+
+        // Commit the transaction after all operations succeed
+        await transaction.commit();
+        return true;
+    } catch (error) {
+        // Rollback the transaction if an error occurs
+        await transaction.rollback();
+        throw error;
+    }
+};
+
+//#endregion

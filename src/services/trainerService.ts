@@ -1,13 +1,23 @@
-import { where } from 'sequelize';
 import { ITrainerRequestDTO } from "../interfaces/ITrainer";
 import TrainerModel from "../models/TrainerModel";
 import sequelize from "../database/connection";
 import { ITrainerMediaFileRequest, ITrainerMediaFileResponse } from "../interfaces/ITrainerMedia";
 import TrainerMediaModel from "../models/TranierMediaModel";
-import { FolderNames, MediaType } from "../utils/enums";
+import { MediaType } from "../utils/enums";
 import { FileRemoved } from "../utils/fileHandle";
 
-export const getTrainerById = async (Id: number): Promise<TrainerModel | null> => {
+
+export const getAllTrainerQuery = async (): Promise<TrainerModel[]> => {
+    try {
+        const trainer = await TrainerModel.findAll();
+        return trainer;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getTrainerByIdQuery = async (Id: number): Promise<TrainerModel | null> => {
 
     try {
         const trainer = await TrainerModel.findOne({ where: { Id: Id } });
@@ -21,6 +31,7 @@ export const getTrainerById = async (Id: number): Promise<TrainerModel | null> =
 
 export const getMediaByMediaId = async (_mediaId: number) => {
     try {
+
         const media = await TrainerMediaModel.findOne({ where: { Id: _mediaId } });
         return media;
 
@@ -41,28 +52,57 @@ export const deleteMediaById = async (_mediaId: number) => {
 
 export const updateTrainerById = async (_profile: ITrainerRequestDTO, trainerId: number) => {
     try {
-        const obj = await TrainerModel.update(
-            {
-                FirstName: _profile.FirstName,
-                LastName: _profile.LastName,
-                MobileNumber: _profile.MobileNumber,
-                DoB: _profile.DoB,
-                CountryResidence: _profile.CountryResidence,
-                Description: _profile.Description,
-                Nationality: _profile.Nationality,
-                GenderId: _profile.GenderId
-            },
-            {
-                where: {
-                    Id: trainerId,
+        if (_profile.ProfileImage) {
+            const obj = await TrainerModel.update(
+                {
+                    FirstName: _profile.FirstName,
+                    LastName: _profile.LastName,
+                    MobileNumber: _profile.MobileNumber,
+                    DoB: _profile.DoB,
+                    location: _profile.location,
+                    CountryResidence: _profile.CountryResidence,
+                    Description: _profile.Description,
+                    Nationality: _profile.Nationality,
+                    GenderId: _profile.GenderId,
+                    ProfileImage: _profile.ProfileImage
                 },
-            },
-        );
+                {
+                    where: {
+                        Id: trainerId,
+                    },
+                },
+            );
 
-        if (obj[0] > 0)
-            return true;
-        else
-            return false;
+            if (obj[0] > 0)
+                return true;
+            else
+                return false;
+        }
+        else {
+            const obj = await TrainerModel.update(
+                {
+                    FirstName: _profile.FirstName,
+                    LastName: _profile.LastName,
+                    MobileNumber: _profile.MobileNumber,
+                    DoB: _profile.DoB,
+                    location: _profile.location,
+                    CountryResidence: _profile.CountryResidence,
+                    Description: _profile.Description,
+                    Nationality: _profile.Nationality,
+                    GenderId: _profile.GenderId,
+                },
+                {
+                    where: {
+                        Id: trainerId,
+                    },
+                },
+            );
+
+            if (obj[0] > 0)
+                return true;
+            else
+                return false;
+        }
 
     } catch (error) {
         throw error;
@@ -77,6 +117,7 @@ export const createTrainer = async (_trainer: ITrainerRequestDTO) => {
             FirstName: _trainer.FirstName,
             LastName: _trainer.LastName,
             MobileNumber: _trainer.MobileNumber,
+            location: _trainer.location ? _trainer.location : "",
             DoB: _trainer.DoB,
             Nationality: _trainer.Nationality,
             CountryResidence: _trainer.CountryResidence,
@@ -132,7 +173,7 @@ export const trainerMediaUpload = async (_media: ITrainerMediaFileRequest) => {
 export const deleteTrainerMediaByTrainerId = async (_trainerId: number, _mediaType: number, _mediaId: number) => {
     try {
 
-        const trainer = await getTrainerById(_trainerId);
+        const trainer = await getTrainerByIdQuery(_trainerId);
 
         if (_mediaType === MediaType.AUDIO) {
 
@@ -202,3 +243,10 @@ export const getTrainerMediaByTrainerId = async (_trianerId: number, _mediaTypeI
     }
 }
 
+// export const updateTrainerProfilePhoto = async (_trainerId: number) => {
+//     try {
+
+//     } catch (error) {
+//         throw error;
+//     }
+// }

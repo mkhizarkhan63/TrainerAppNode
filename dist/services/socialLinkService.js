@@ -22,7 +22,8 @@ exports.deleteSocialLinksByTrainerId = deleteSocialLinksByTrainerId;
 const createSocialLinksByTrainerId = async (_socialLinks, _trainerId) => {
     const transaction = await connection_1.default?.transaction();
     try {
-        for (const item of _socialLinks) {
+        const socialLinks = _socialLinks.split(",");
+        for (const item of socialLinks) {
             await SocialLinksModel_1.default.create({ SocialLink: item, TrainerId: _trainerId }, { transaction });
         }
         await transaction.commit();

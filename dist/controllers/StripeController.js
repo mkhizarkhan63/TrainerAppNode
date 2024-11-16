@@ -7,7 +7,7 @@ const createPayment = async (req, res) => {
     try {
         const formData = req.body;
         const result = await (0, stripeService_1.stripeService)(formData);
-        res.json((0, responseUtils_1.successResponse)("Payment Successfully!", 200, result));
+        res.json(result);
     }
     catch (error) {
         res.json((0, responseUtils_1.errorResponse)("Internal Server Error", 500, error));

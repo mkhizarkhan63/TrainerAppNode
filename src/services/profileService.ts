@@ -1,6 +1,6 @@
 import { ITrainerRequestDTO } from './../interfaces/ITrainer';
-import { ITrainerProfile, ITrainerProfileCreate } from "../interfaces/IProfile";
-import { AuthModel, GenderModel, SocialLinkModel } from "../models/_associations";
+import { IClientProfile, IClientProfileDTO, ITrainerProfile, ITrainerProfileDTO } from "../interfaces/IProfile";
+import { AuthModel, ClientModel, GenderModel, SocialLinkModel } from "../models/_associations";
 import CertificateModel from "../models/CertificateModel";
 import LanguageModel from "../models/LanguageModel";
 import PersonalTrainingServicesModel from "../models/PersonalTrainingServicesModel";
@@ -11,21 +11,22 @@ import UserLanguageModel from "../models/UserLanguagesModel";
 import UserNationalCertificateModel from "../models/UserNationalCertificateModel";
 import UserPersonalTrainingServicesModel from "../models/UserPersonalTrainingServicesModel";
 import UserSpecializationModel from "../models/UserSpecializationModel";
-import { createUserPersonalTrainingByTrainerIdQuery, deleteUserPersonalTrainingByTrainerIdQuery } from "./personalTrainingService";
-import { createUserSpecializationByTrainerIdQuery, deleteUserSpecializationByTrainerIdQuery } from "./specializationService";
+import { createUserPersonalTrainingByClientIdQuery, createUserPersonalTrainingByTrainerIdQuery, deleteUserPersonalTrainingByClientIdQuery, deleteUserPersonalTrainingByTrainerIdQuery } from "./personalTrainingService";
+import { createUserSpecializationByClientIdQuery, createUserSpecializationByTrainerIdQuery, deleteUserSpecializationByClientIdQuery, deleteUserSpecializationByTrainerIdQuery } from "./specializationService";
 import { updateTrainerById } from "./trainerService";
 import { createUserLanguagesByTrainerId, deleteUserLangugagesByTrainerId } from './languageService';
 import { createSocialLinksByTrainerId, deleteSocialLinksByTrainerId } from './socialLinkService';
+import { IClientRequestDTO } from '../interfaces/IClient';
+import { updateClientById } from './clientService';
 
 
+//#region  Trainer
 export const getTrainerProfileData = async (_trainerId: number): Promise<ITrainerProfile | null> => {
     try {
         const trainer = await TrainerModel.findOne({
             where: { Id: _trainerId },
             include: [
-
                 {
-
                     model: AuthModel,
                     as: "Auth",
                     attributes: ['EmailAddress']
@@ -117,7 +118,7 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
             return x.Certificates
         });
 
-        const { Gender } = trainer.Gender;
+        // const { Gender } = trainer.Gender;
 
         const NationalCertificate = trainer.UserNationalCertificates;
 
@@ -127,9 +128,11 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
             EmailAddress: emailAddress,
             FirstName: trainer.FirstName,
             LastName: trainer.LastName,
+            ProfileImage: trainer.ProfileImage,
             DoB: trainer.DoB,
             CountryResidence: trainer.CountryResidence,
-            Gender: Gender,
+            Gender: trainer.Gender,
+            Location : trainer.location,
             MobileNumber: trainer.MobileNumber,
             Nationality: trainer.Nationality,
             Description: trainer.Description,
@@ -150,10 +153,8 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
 }
 
 
-
-export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfileCreate) => {
+export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfileDTO) => {
     try {
-
         //trainer update
 
         const trainerObj: ITrainerRequestDTO = {
@@ -161,10 +162,12 @@ export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfil
             LastName: _profile.LastName,
             MobileNumber: _profile.MobileNumber,
             DoB: _profile.DoB,
+            location: _profile.location,
             CountryResidence: _profile.CountryResidence,
             Description: _profile.Description,
             Nationality: _profile.Nationality,
-            GenderId: _profile.GenderId
+            GenderId: _profile.GenderId,
+            ProfileImage: _profile.profilePicture
         };
 
         const trainer = await updateTrainerById(trainerObj, _profile.Id);
@@ -208,3 +211,128 @@ export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfil
         throw error;
     }
 }
+//#endregion
+
+//#region  Client
+export const getClientProfileData = async (_clientId: number) => {
+    try {
+        const client = await ClientModel.findOne({
+            where: { Id: _clientId },
+            include: [
+                {
+                    model: AuthModel,
+                    as: "Auth",
+                    attributes: ['EmailAddress']
+
+                },
+                {//PersonalTraining Join
+                    model: UserPersonalTrainingServicesModel,
+                    as: "UserPersonalTrainingServices",
+                    include: [
+                        {
+                            model: PersonalTrainingServicesModel,
+                            as: "PersonalTrainingService",
+                            attributes: ['Id', 'Name'] // Specify fields from PersonalTrainingServicesModel
+                        }
+                    ]
+                },
+                { //Specialization Join
+                    model: UserSpecializationModel,
+                    as: "UserSpecialization",
+                    include: [
+                        {
+                            model: SpecializationModel,
+                            as: "Specializations",
+                            attributes: ['Id', 'Name']
+                        }
+                    ]
+                },
+                {
+                    model: GenderModel,
+                    as: "Gender",
+                    attributes: ['Id', 'Gender']
+                },
+            ]
+        });
+        // If trainer not found, return null
+        if (!client) {
+            return null;
+        }
+
+        // Reshape the data to extract services
+        const personalTrainingServices = client.UserPersonalTrainingServices.map(x => {
+            return x.PersonalTrainingService;
+        });
+
+        const specialization = client.UserSpecialization.map(x => {
+            return x.Specializations;
+        });
+        // const { Gender } = client.Gender;
+        const emailAddress = client.Auth ? client.Auth.EmailAddress : ""
+        const profileObj: IClientProfile = {
+            Id: client.Id,
+            EmailAddress: emailAddress,
+            FirstName: client.FirstName,
+            LastName: client.LastName,
+            DoB: client.DoB,
+            CountryResidence: client.CountryResidence,
+            Gender: client.Gender,
+            Location : client.location,
+            MobileNumber: client.MobileNumber,
+            Nationality: client.Nationality,
+            TypeId: client.TypeId,
+            PersonalTrainingservices: personalTrainingServices,
+            Specializations: specialization
+
+        }
+        return profileObj;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const CreateOrUpdateClientProfileQuery = async (_profile: IClientProfileDTO) => {
+    try {
+
+        const clientObj: IClientRequestDTO = {
+            FirstName: _profile.FirstName,
+            LastName: _profile.LastName,
+            MobileNumber: _profile.MobileNumber,
+            DoB: _profile.DoB,
+            location: _profile.location,
+            CountryResidence: _profile.CountryResidence,
+            Description: _profile.Description,
+            Nationality: _profile.Nationality,
+            GenderId: _profile.GenderId,
+            ProfileImage: _profile.profilePicture
+        };
+        //update client
+        const client = await updateClientById(clientObj, _profile.Id);
+
+        if (client) {
+
+            if (_profile.PersonalTrainingservices.length > 0) {
+                //UserPersonalTrainingservices Delete
+                const isDeleted = await deleteUserPersonalTrainingByClientIdQuery(_profile.Id);
+
+                //personalTrainingservice create
+                await createUserPersonalTrainingByClientIdQuery(_profile.PersonalTrainingservices, _profile.Id);
+            }
+
+            if (_profile.Specializations.length > 0) {
+                //specialization delete
+                const isDeleted = await deleteUserSpecializationByClientIdQuery(_profile.Id);
+                //specialization create
+                await createUserSpecializationByClientIdQuery(_profile.Specializations, _profile.Id);
+            }
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+//#endregion

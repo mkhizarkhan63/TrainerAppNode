@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateOrUpdateTrainerProfileQuery = exports.getTrainerProfileData = void 0;
+exports.CreateOrUpdateClientProfileQuery = exports.getClientProfileData = exports.CreateOrUpdateTrainerProfileQuery = exports.getTrainerProfileData = void 0;
 const _associations_1 = require("../models/_associations");
 const CertificateModel_1 = __importDefault(require("../models/CertificateModel"));
 const LanguageModel_1 = __importDefault(require("../models/LanguageModel"));
@@ -20,6 +20,8 @@ const specializationService_1 = require("./specializationService");
 const trainerService_1 = require("./trainerService");
 const languageService_1 = require("./languageService");
 const socialLinkService_1 = require("./socialLinkService");
+const clientService_1 = require("./clientService");
+//#region  Trainer
 const getTrainerProfileData = async (_trainerId) => {
     try {
         const trainer = await TrainerModel_1.default.findOne({
@@ -107,7 +109,7 @@ const getTrainerProfileData = async (_trainerId) => {
         const certificates = trainer.UserCertificates.map(x => {
             return x.Certificates;
         });
-        const { Gender } = trainer.Gender;
+        // const { Gender } = trainer.Gender;
         const NationalCertificate = trainer.UserNationalCertificates;
         const emailAddress = trainer.Auth ? trainer.Auth.EmailAddress : "";
         const profileObj = {
@@ -115,9 +117,11 @@ const getTrainerProfileData = async (_trainerId) => {
             EmailAddress: emailAddress,
             FirstName: trainer.FirstName,
             LastName: trainer.LastName,
+            ProfileImage: trainer.ProfileImage,
             DoB: trainer.DoB,
             CountryResidence: trainer.CountryResidence,
-            Gender: Gender,
+            Gender: trainer.Gender,
+            Location: trainer.location,
             MobileNumber: trainer.MobileNumber,
             Nationality: trainer.Nationality,
             Description: trainer.Description,
@@ -145,10 +149,12 @@ const CreateOrUpdateTrainerProfileQuery = async (_profile) => {
             LastName: _profile.LastName,
             MobileNumber: _profile.MobileNumber,
             DoB: _profile.DoB,
+            location: _profile.location,
             CountryResidence: _profile.CountryResidence,
             Description: _profile.Description,
             Nationality: _profile.Nationality,
-            GenderId: _profile.GenderId
+            GenderId: _profile.GenderId,
+            ProfileImage: _profile.profilePicture
         };
         const trainer = await (0, trainerService_1.updateTrainerById)(trainerObj, _profile.Id);
         if (trainer) {
@@ -186,3 +192,120 @@ const CreateOrUpdateTrainerProfileQuery = async (_profile) => {
     }
 };
 exports.CreateOrUpdateTrainerProfileQuery = CreateOrUpdateTrainerProfileQuery;
+//#endregion
+//#region  Client
+const getClientProfileData = async (_clientId) => {
+    try {
+        const client = await _associations_1.ClientModel.findOne({
+            where: { Id: _clientId },
+            include: [
+                {
+                    model: _associations_1.AuthModel,
+                    as: "Auth",
+                    attributes: ['EmailAddress']
+                },
+                {
+                    model: UserPersonalTrainingServicesModel_1.default,
+                    as: "UserPersonalTrainingServices",
+                    include: [
+                        {
+                            model: PersonalTrainingServicesModel_1.default,
+                            as: "PersonalTrainingService",
+                            attributes: ['Id', 'Name'] // Specify fields from PersonalTrainingServicesModel
+                        }
+                    ]
+                },
+                {
+                    model: UserSpecializationModel_1.default,
+                    as: "UserSpecialization",
+                    include: [
+                        {
+                            model: SpecializationModel_1.default,
+                            as: "Specializations",
+                            attributes: ['Id', 'Name']
+                        }
+                    ]
+                },
+                {
+                    model: _associations_1.GenderModel,
+                    as: "Gender",
+                    attributes: ['Id', 'Gender']
+                },
+            ]
+        });
+        // If trainer not found, return null
+        if (!client) {
+            return null;
+        }
+        // Reshape the data to extract services
+        const personalTrainingServices = client.UserPersonalTrainingServices.map(x => {
+            return x.PersonalTrainingService;
+        });
+        const specialization = client.UserSpecialization.map(x => {
+            return x.Specializations;
+        });
+        // const { Gender } = client.Gender;
+        const emailAddress = client.Auth ? client.Auth.EmailAddress : "";
+        const profileObj = {
+            Id: client.Id,
+            EmailAddress: emailAddress,
+            FirstName: client.FirstName,
+            LastName: client.LastName,
+            DoB: client.DoB,
+            CountryResidence: client.CountryResidence,
+            Gender: client.Gender,
+            Location: client.location,
+            MobileNumber: client.MobileNumber,
+            Nationality: client.Nationality,
+            TypeId: client.TypeId,
+            PersonalTrainingservices: personalTrainingServices,
+            Specializations: specialization
+        };
+        return profileObj;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.getClientProfileData = getClientProfileData;
+const CreateOrUpdateClientProfileQuery = async (_profile) => {
+    try {
+        const clientObj = {
+            FirstName: _profile.FirstName,
+            LastName: _profile.LastName,
+            MobileNumber: _profile.MobileNumber,
+            DoB: _profile.DoB,
+            location: _profile.location,
+            CountryResidence: _profile.CountryResidence,
+            Description: _profile.Description,
+            Nationality: _profile.Nationality,
+            GenderId: _profile.GenderId,
+            ProfileImage: _profile.profilePicture
+        };
+        //update client
+        const client = await (0, clientService_1.updateClientById)(clientObj, _profile.Id);
+        if (client) {
+            if (_profile.PersonalTrainingservices.length > 0) {
+                //UserPersonalTrainingservices Delete
+                const isDeleted = await (0, personalTrainingService_1.deleteUserPersonalTrainingByClientIdQuery)(_profile.Id);
+                //personalTrainingservice create
+                await (0, personalTrainingService_1.createUserPersonalTrainingByClientIdQuery)(_profile.PersonalTrainingservices, _profile.Id);
+            }
+            if (_profile.Specializations.length > 0) {
+                //specialization delete
+                const isDeleted = await (0, specializationService_1.deleteUserSpecializationByClientIdQuery)(_profile.Id);
+                //specialization create
+                await (0, specializationService_1.createUserSpecializationByClientIdQuery)(_profile.Specializations, _profile.Id);
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.CreateOrUpdateClientProfileQuery = CreateOrUpdateClientProfileQuery;
+//#endregion

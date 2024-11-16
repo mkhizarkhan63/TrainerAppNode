@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserPersonalTrainingByTrainerIdQuery = exports.deleteUserPersonalTrainingByTrainerIdQuery = exports.createUserPersonalTrainingServiceQuery = exports.getPersonalTrainingServiceByIdQuery = exports.getAllPersonalTrainingServiceQuery = void 0;
+exports.createUserPersonalTrainingByClientIdQuery = exports.deleteUserPersonalTrainingByClientIdQuery = exports.createUserPersonalTrainingByTrainerIdQuery = exports.deleteUserPersonalTrainingByTrainerIdQuery = exports.createUserPersonalTrainingServiceQuery = exports.getPersonalTrainingServiceByIdQuery = exports.getAllPersonalTrainingServiceQuery = void 0;
 const connection_1 = __importDefault(require("../database/connection"));
 const PersonalTrainingServicesModel_1 = __importDefault(require("../models/PersonalTrainingServicesModel"));
 const UserPersonalTrainingServicesModel_1 = __importDefault(require("../models/UserPersonalTrainingServicesModel"));
@@ -88,8 +88,9 @@ const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTrainingservi
     const transaction = await connection_1.default.transaction();
     try {
         // Use a for...of loop to await each create operation
-        for (const item of _PersonalTrainingservicesIds) {
-            await UserPersonalTrainingServicesModel_1.default.create({ PersonalTrainingServiceId: item, TrainerId: _trainerId }, { transaction });
+        const personalTrainingServicesIds = _PersonalTrainingservicesIds.split(",");
+        for (const item of personalTrainingServicesIds) {
+            await UserPersonalTrainingServicesModel_1.default.create({ PersonalTrainingServiceId: parseInt(item), TrainerId: _trainerId }, { transaction });
         }
         // Commit the transaction after all operations succeed
         await transaction.commit();
@@ -102,3 +103,41 @@ const createUserPersonalTrainingByTrainerIdQuery = async (_PersonalTrainingservi
     }
 };
 exports.createUserPersonalTrainingByTrainerIdQuery = createUserPersonalTrainingByTrainerIdQuery;
+//#region  Client
+const deleteUserPersonalTrainingByClientIdQuery = async (_clientId) => {
+    try {
+        const obj = await UserPersonalTrainingServicesModel_1.default.destroy({
+            where: {
+                ClientId: _clientId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.deleteUserPersonalTrainingByClientIdQuery = deleteUserPersonalTrainingByClientIdQuery;
+const createUserPersonalTrainingByClientIdQuery = async (_PersonalTrainingservicesIds, _clientId) => {
+    const transaction = await connection_1.default.transaction();
+    try {
+        // Use a for...of loop to await each create operation
+        const personalTrainingServicesIds = _PersonalTrainingservicesIds.split(",");
+        for (const item of personalTrainingServicesIds) {
+            await UserPersonalTrainingServicesModel_1.default.create({ PersonalTrainingServiceId: parseInt(item), ClientId: _clientId }, { transaction });
+        }
+        // Commit the transaction after all operations succeed
+        await transaction.commit();
+        return true;
+    }
+    catch (error) {
+        // Rollback the transaction if an error occurs
+        await transaction.rollback();
+        throw error;
+    }
+};
+exports.createUserPersonalTrainingByClientIdQuery = createUserPersonalTrainingByClientIdQuery;
+//#endregion

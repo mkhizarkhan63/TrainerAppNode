@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserSpecializationQuery = exports.createUserSpecializationByTrainerIdQuery = exports.deleteUserSpecializationByTrainerIdQuery = exports.getSpecializationByIdQuery = exports.getAllSpecializationQuery = void 0;
+exports.createUserSpecializationByClientIdQuery = exports.deleteUserSpecializationByClientIdQuery = exports.createUserSpecializationQuery = exports.createUserSpecializationByTrainerIdQuery = exports.deleteUserSpecializationByTrainerIdQuery = exports.getSpecializationByIdQuery = exports.getAllSpecializationQuery = void 0;
 const connection_1 = __importDefault(require("../database/connection"));
 const SpecializationModel_1 = __importDefault(require("../models/SpecializationModel"));
 const UserSpecializationModel_1 = __importDefault(require("../models/UserSpecializationModel"));
@@ -51,8 +51,9 @@ exports.deleteUserSpecializationByTrainerIdQuery = deleteUserSpecializationByTra
 const createUserSpecializationByTrainerIdQuery = async (_specializationIds, _trainerId) => {
     const transaction = await connection_1.default?.transaction();
     try {
-        for (const item of _specializationIds) {
-            await UserSpecializationModel_1.default.create({ SpecializationId: item, TrainerId: _trainerId }, { transaction });
+        const specializationIds = _specializationIds.split(",");
+        for (const item of specializationIds) {
+            await UserSpecializationModel_1.default.create({ SpecializationId: parseInt(item), TrainerId: _trainerId }, { transaction });
         }
         await transaction.commit();
         return true;
@@ -102,3 +103,38 @@ const createUserSpecializationQuery = async (_trainerId, _clientId, _typeId, _sp
     }
 };
 exports.createUserSpecializationQuery = createUserSpecializationQuery;
+//#region Client
+const deleteUserSpecializationByClientIdQuery = async (_clientId) => {
+    try {
+        const obj = await UserSpecializationModel_1.default.destroy({
+            where: {
+                ClientId: _clientId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.deleteUserSpecializationByClientIdQuery = deleteUserSpecializationByClientIdQuery;
+const createUserSpecializationByClientIdQuery = async (_specializationIds, _clientId) => {
+    const transaction = await connection_1.default?.transaction();
+    try {
+        const specializationIds = _specializationIds.split(",");
+        for (const item of specializationIds) {
+            await UserSpecializationModel_1.default.create({ SpecializationId: parseInt(item), ClientId: _clientId }, { transaction });
+        }
+        await transaction.commit();
+        return true;
+    }
+    catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
+exports.createUserSpecializationByClientIdQuery = createUserSpecializationByClientIdQuery;
+//#endregion

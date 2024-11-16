@@ -10,8 +10,8 @@ export const createPayment = async (req: Request, res: Response) => {
     try {
 
         const formData: StipeFormDataType = req.body;
-        const result = await stripeService(formData);
-        res.json(successResponse("Payment Successfully!", 200, result));
+        const result =  await stripeService(formData);
+        res.json(result);
     }
     catch (error) {
         res.json(errorResponse("Internal Server Error", 500, error));

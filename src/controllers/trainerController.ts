@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { successResponse, errorResponse } from "../utils/responseUtils";
 import { ITrainerMediaFileRequest } from "../interfaces/ITrainerMedia";
-import { deleteTrainerMediaByTrainerId, getTrainerMediaByTrainerId, trainerMediaUpload } from "../services/trainerService";
+import { deleteTrainerMediaByTrainerId, getAllTrainerQuery, getTrainerMediaByTrainerId, trainerMediaUpload } from "../services/trainerService";
 
 
 type FileField = Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] } | undefined;
@@ -77,6 +77,16 @@ export const DeleteUserMediaByTrainerId = async (req: Request, res: Response) =>
         res.json(successResponse("File Deleted Successfully!", 200));
     }
     catch (error) {
+        res.json(errorResponse("Internal Server Error", 500, error));
+    }
+}
+
+
+export const getAllTrainers = async (req: Request, res: Response) => {
+    try {
+        const result = await getAllTrainerQuery();
+        res.json(successResponse("", 200, result));
+    } catch (error) {
         res.json(errorResponse("Internal Server Error", 500, error));
     }
 }

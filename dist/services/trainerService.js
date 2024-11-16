@@ -3,13 +3,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTrainerMediaByTrainerId = exports.deleteTrainerMediaByTrainerId = exports.trainerMediaUpload = exports.createTrainer = exports.updateTrainerById = exports.deleteMediaById = exports.getMediaByMediaId = exports.getTrainerById = void 0;
+exports.getTrainerMediaByTrainerId = exports.deleteTrainerMediaByTrainerId = exports.trainerMediaUpload = exports.createTrainer = exports.updateTrainerById = exports.deleteMediaById = exports.getMediaByMediaId = exports.getTrainerByIdQuery = exports.getAllTrainerQuery = void 0;
 const TrainerModel_1 = __importDefault(require("../models/TrainerModel"));
 const connection_1 = __importDefault(require("../database/connection"));
 const TranierMediaModel_1 = __importDefault(require("../models/TranierMediaModel"));
 const enums_1 = require("../utils/enums");
 const fileHandle_1 = require("../utils/fileHandle");
-const getTrainerById = async (Id) => {
+const getAllTrainerQuery = async () => {
+    try {
+        const trainer = await TrainerModel_1.default.findAll();
+        return trainer;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+exports.getAllTrainerQuery = getAllTrainerQuery;
+const getTrainerByIdQuery = async (Id) => {
     try {
         const trainer = await TrainerModel_1.default.findOne({ where: { Id: Id } });
         return trainer;
@@ -18,7 +28,7 @@ const getTrainerById = async (Id) => {
         throw new Error(error);
     }
 };
-exports.getTrainerById = getTrainerById;
+exports.getTrainerByIdQuery = getTrainerByIdQuery;
 const getMediaByMediaId = async (_mediaId) => {
     try {
         const media = await TranierMediaModel_1.default.findOne({ where: { Id: _mediaId } });
@@ -41,24 +51,49 @@ const deleteMediaById = async (_mediaId) => {
 exports.deleteMediaById = deleteMediaById;
 const updateTrainerById = async (_profile, trainerId) => {
     try {
-        const obj = await TrainerModel_1.default.update({
-            FirstName: _profile.FirstName,
-            LastName: _profile.LastName,
-            MobileNumber: _profile.MobileNumber,
-            DoB: _profile.DoB,
-            CountryResidence: _profile.CountryResidence,
-            Description: _profile.Description,
-            Nationality: _profile.Nationality,
-            GenderId: _profile.GenderId
-        }, {
-            where: {
-                Id: trainerId,
-            },
-        });
-        if (obj[0] > 0)
-            return true;
-        else
-            return false;
+        if (_profile.ProfileImage) {
+            const obj = await TrainerModel_1.default.update({
+                FirstName: _profile.FirstName,
+                LastName: _profile.LastName,
+                MobileNumber: _profile.MobileNumber,
+                DoB: _profile.DoB,
+                location: _profile.location,
+                CountryResidence: _profile.CountryResidence,
+                Description: _profile.Description,
+                Nationality: _profile.Nationality,
+                GenderId: _profile.GenderId,
+                ProfileImage: _profile.ProfileImage
+            }, {
+                where: {
+                    Id: trainerId,
+                },
+            });
+            if (obj[0] > 0)
+                return true;
+            else
+                return false;
+        }
+        else {
+            const obj = await TrainerModel_1.default.update({
+                FirstName: _profile.FirstName,
+                LastName: _profile.LastName,
+                MobileNumber: _profile.MobileNumber,
+                DoB: _profile.DoB,
+                location: _profile.location,
+                CountryResidence: _profile.CountryResidence,
+                Description: _profile.Description,
+                Nationality: _profile.Nationality,
+                GenderId: _profile.GenderId,
+            }, {
+                where: {
+                    Id: trainerId,
+                },
+            });
+            if (obj[0] > 0)
+                return true;
+            else
+                return false;
+        }
     }
     catch (error) {
         throw error;
@@ -72,6 +107,7 @@ const createTrainer = async (_trainer) => {
             FirstName: _trainer.FirstName,
             LastName: _trainer.LastName,
             MobileNumber: _trainer.MobileNumber,
+            location: _trainer.location ? _trainer.location : "",
             DoB: _trainer.DoB,
             Nationality: _trainer.Nationality,
             CountryResidence: _trainer.CountryResidence,
@@ -122,7 +158,7 @@ const trainerMediaUpload = async (_media) => {
 exports.trainerMediaUpload = trainerMediaUpload;
 const deleteTrainerMediaByTrainerId = async (_trainerId, _mediaType, _mediaId) => {
     try {
-        const trainer = await (0, exports.getTrainerById)(_trainerId);
+        const trainer = await (0, exports.getTrainerByIdQuery)(_trainerId);
         if (_mediaType === enums_1.MediaType.AUDIO) {
             if (trainer) {
                 const media = await (0, exports.getMediaByMediaId)(_mediaId);
@@ -186,3 +222,9 @@ const getTrainerMediaByTrainerId = async (_trianerId, _mediaTypeId) => {
     }
 };
 exports.getTrainerMediaByTrainerId = getTrainerMediaByTrainerId;
+// export const updateTrainerProfilePhoto = async (_trainerId: number) => {
+//     try {
+//     } catch (error) {
+//         throw error;
+//     }
+// }

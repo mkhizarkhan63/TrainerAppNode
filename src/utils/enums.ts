@@ -29,5 +29,6 @@ export enum FolderNames {
     VIDEO = "videos",
     AUDIO = "audios",
     CERTIFICATES = "certificates",
-    NATIONALCERTIFICATES = "nationalCertificate"
+    NATIONALCERTIFICATES = "nationalCertificate",
+    PROFILEPICTURE = "profilePictures"
 }

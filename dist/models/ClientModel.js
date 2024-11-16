@@ -39,6 +39,10 @@ ClientModel.init({
         type: sequelize_1.DataTypes.STRING(45),
         allowNull: false,
     },
+    location: {
+        type: sequelize_1.DataTypes.JSON,
+        allowNull: true
+    },
     GenderId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -54,6 +58,11 @@ ClientModel.init({
             model: TypeModel_1.default,
             key: 'Id'
         }
+    },
+    ProfileImage: {
+        type: sequelize_1.DataTypes.STRING(256),
+        allowNull: true,
+        defaultValue: null
     }
 }, {
     sequelize: connection_1.default,

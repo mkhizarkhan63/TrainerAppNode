@@ -51,13 +51,13 @@ export const deleteUserSpecializationByTrainerIdQuery = async (_trainerId: numbe
 
 }
 
-export const createUserSpecializationByTrainerIdQuery = async (_specializationIds: number[], _trainerId: number) => {
+export const createUserSpecializationByTrainerIdQuery = async (_specializationIds: string, _trainerId: number) => {
     const transaction = await sequelize?.transaction();
     try {
+        const specializationIds = _specializationIds.split(",");
+        for (const item of specializationIds) {
 
-        for (const item of _specializationIds) {
-
-            await UserSpecializationModel.create({ SpecializationId: item, TrainerId: _trainerId }, { transaction });
+            await UserSpecializationModel.create({ SpecializationId: parseInt(item), TrainerId: _trainerId }, { transaction });
         }
 
 
@@ -112,3 +112,48 @@ export const createUserSpecializationQuery = async (_trainerId: number, _clientI
         throw new Error(error);
     }
 }
+
+
+
+//#region Client
+
+export const deleteUserSpecializationByClientIdQuery = async (_clientId: number): Promise<boolean> => {
+
+    try {
+        const obj = await UserSpecializationModel.destroy({
+            where: {
+                ClientId: _clientId
+            },
+        });
+        if (obj > 0)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+export const createUserSpecializationByClientIdQuery = async (_specializationIds: string, _clientId: number) => {
+    const transaction = await sequelize?.transaction();
+    try {
+        const specializationIds = _specializationIds.split(",");
+        for (const item of specializationIds) {
+
+            await UserSpecializationModel.create({ SpecializationId: parseInt(item), ClientId: _clientId }, { transaction });
+        }
+
+
+        await transaction.commit();
+        return true;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+}
+
+
+
+//#endregion

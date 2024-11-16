@@ -5,6 +5,7 @@ export interface ITrainerAttributes {
     FirstName: string,
     LastName: string,
     MobileNumber: string,
+    location: string,
     DoB: string,
     Nationality: string,
     CountryResidence: string,
@@ -12,24 +13,19 @@ export interface ITrainerAttributes {
     GenderId: number,
     TypeId: number,
     NationalCertificateId?: number,
+    ProfileImage?: string
 
 }
 
 
-// // Extend the interface to include associations
-// export interface ITrainerWithServices extends ITrainerAttributes {
-//     UserPersonalTrainingServices?: UserPersonalTrainingServicesModel[]
-// }
-
-
-
-export interface ITrainerResponseDTO {
+export interface ITrainerRegistrationDTO {
     FirstName: string,
     LastName: string,
     MobileNumber: string
     DoB: string,
     Nationality: string,
     CountryResidence: string,
+    location: string,
     EmailAddress: string,
     Password: string,
     GenderId: number,
@@ -42,13 +38,15 @@ export interface ITrainerResponseDTO {
 export interface ITrainerRequestDTO {
     FirstName: string,
     LastName: string,
-    MobileNumber: string
+    MobileNumber: string,
+    location?: string,
     DoB: string,
     Nationality: string,
     CountryResidence: string,
     Description: string,
     GenderId?: number,
-    TypeId?: number
+    TypeId?: number,
+    ProfileImage?: string
 }
 
 

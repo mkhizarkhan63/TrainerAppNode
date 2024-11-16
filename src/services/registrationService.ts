@@ -1,5 +1,5 @@
 import { IClientDTO } from "../interfaces/IClient";
-import { ITrainerResponseDTO } from "../interfaces/ITrainer";
+import { ITrainerRegistrationDTO } from "../interfaces/ITrainer";
 import AuthModel from "../models/AuthModel";
 import ClientModel from "../models/ClientModel";
 import TrainerModel from "../models/TrainerModel";
@@ -19,6 +19,7 @@ export const clientRegistration = async (_client: IClientDTO) => {
             LastName: _client.LastName,
             MobileNumber: _client.MobileNumber,
             DoB: _client.DoB,
+            location : _client.location,
             Nationality: _client.Nationality,
             CountryResidence: _client.CountryResidence,
             GenderId: _client.GenderId,
@@ -65,7 +66,7 @@ export const clientRegistration = async (_client: IClientDTO) => {
 
 
 
-export const trainerRegistration = async (_trainer: ITrainerResponseDTO) => {
+export const trainerRegistration = async (_trainer: ITrainerRegistrationDTO) => {
     const transaction = await TrainerModel.sequelize?.transaction();
     try {
 
@@ -73,6 +74,7 @@ export const trainerRegistration = async (_trainer: ITrainerResponseDTO) => {
             FirstName: _trainer.FirstName,
             LastName: _trainer.LastName,
             MobileNumber: _trainer.MobileNumber,
+            location : _trainer.location,
             DoB: _trainer.DoB,
             Nationality: _trainer.Nationality,
             CountryResidence: _trainer.CountryResidence,

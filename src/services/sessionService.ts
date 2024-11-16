@@ -6,8 +6,8 @@ import ActivitesModel from "../models/ActivitiesModel";
 import SessionModel from "../models/SessionsModel";
 import { UserTypeEnum as E } from "../utils/enums";
 import { ResponseDTO } from "../utils/responseUtils";
-import { getTrainerById } from "./trainerService";
-import { getClientById } from "./clientService";
+import { getTrainerByIdQuery} from "./trainerService";
+import { getClientByIdQuery } from "./clientService";
 
 
 
@@ -199,11 +199,11 @@ export const getAllSesionByIdGenericQuery = async (_classType: string[], _schedu
             let trainer: TrainerModel | null = null;
             let client: ClientModel | null = null;
             if (session.TrainerId) {
-                trainer = await getTrainerById(session.TrainerId);
+                trainer = await getTrainerByIdQuery(session.TrainerId);
 
             }
             if (session.ClientId) {
-                client = await getClientById(session.ClientId);
+                client = await getClientByIdQuery(session.ClientId);
 
             }
             // Add the participant count to each session

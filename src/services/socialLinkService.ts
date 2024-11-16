@@ -19,12 +19,13 @@ export const deleteSocialLinksByTrainerId = async (_trainerId: number) => {
 }
 
 
-export const createSocialLinksByTrainerId = async (_socialLinks: string[], _trainerId: number) => {
+export const createSocialLinksByTrainerId = async (_socialLinks: string, _trainerId: number) => {
 
     const transaction = await sequelize?.transaction();
     try {
 
-        for (const item of _socialLinks) {
+        const socialLinks = _socialLinks.split(",")
+        for (const item of socialLinks) {
 
             await SocialLinkModel.create({ SocialLink: item, TrainerId: _trainerId }, { transaction });
         }

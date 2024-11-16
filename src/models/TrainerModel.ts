@@ -23,6 +23,9 @@ class TrainerModel extends Model<ITrainerAttributes> implements ITrainerAttribut
     public TypeId!: number;
     public NationalCertificateId!: number;
     public Description!: string;
+    public location!: string;
+    public ProfileImage!: string;
+
 
     public UserPersonalTrainingServices!: UserPersonalTrainingServicesModel[];
     public UserSpecialization!: UserSpecializationModel[];
@@ -78,6 +81,10 @@ TrainerModel.init({
             key: 'Id'
         }
     },
+    location: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
     TypeId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -97,7 +104,11 @@ TrainerModel.init({
         onUpdate: 'SET NULL',
         onDelete: 'SET NULL'
     },
-
+    ProfileImage: {
+        type: DataTypes.STRING(256),
+        allowNull: true,
+        defaultValue: null
+    }
 }, {
     sequelize,
     modelName: "trainer_tbl",

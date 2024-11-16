@@ -21,7 +21,7 @@ const HandleFileUploadService = async (_fileMode, _fileType, _userType, _nationa
         status: false
     };
     if (_trainerId !== "0") {
-        const trainer = await (0, trainerService_1.getTrainerById)(parseInt(_trainerId));
+        const trainer = await (0, trainerService_1.getTrainerByIdQuery)(parseInt(_trainerId));
         if (trainer) {
             if (_userType.toLowerCase() === enums_1.UserTypeEnum.Trainer) {
                 //Checks filetype
@@ -49,7 +49,7 @@ const HandleFileUploadService = async (_fileMode, _fileType, _userType, _nationa
         }
     }
     if (_clientId !== "0") {
-        const client = await (0, clientService_1.getClientById)(parseInt(_clientId));
+        const client = await (0, clientService_1.getClientByIdQuery)(parseInt(_clientId));
         if (client) {
             if (_userType.toLowerCase() === enums_1.UserTypeEnum.Client) {
                 //Checks filetype

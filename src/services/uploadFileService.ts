@@ -3,8 +3,8 @@ import { FileMode, FileType, UserTypeEnum } from "../utils/enums";
 import fs from 'fs';
 import dotenv from 'dotenv';
 import { CreateCertificates, UpdateCertificates } from "./certificateService";
-import { getTrainerById } from "./trainerService";
-import { getClientById } from "./clientService";
+import { getTrainerByIdQuery } from "./trainerService";
+import { getClientByIdQuery} from "./clientService";
 import { IUserNationalCertificateDTO } from "../interfaces/IUserNationalCertificate";
 import { ICertificateDTO } from "../interfaces/ICertificate";
 import { CreateNationalCertificate, UpdateNationalCertificate } from "./nationalCertificateService";
@@ -31,7 +31,7 @@ export const HandleFileUploadService = async (_fileMode: string, _fileType: stri
     };
 
     if (_trainerId !== "0") {
-        const trainer = await getTrainerById(parseInt(_trainerId));
+        const trainer = await getTrainerByIdQuery(parseInt(_trainerId));
         if (trainer) {
             if (_userType.toLowerCase() === UserTypeEnum.Trainer) {
 
@@ -62,7 +62,7 @@ export const HandleFileUploadService = async (_fileMode: string, _fileType: stri
 
     }
     if (_clientId !== "0") {
-        const client = await getClientById(parseInt(_clientId));
+        const client = await getClientByIdQuery(parseInt(_clientId));
         if (client) {
 
             if (_userType.toLowerCase() === UserTypeEnum.Client) {

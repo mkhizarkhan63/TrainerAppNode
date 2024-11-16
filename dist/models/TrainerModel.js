@@ -52,6 +52,10 @@ TrainerModel.init({
             key: 'Id'
         }
     },
+    location: {
+        type: sequelize_1.DataTypes.JSON,
+        allowNull: true,
+    },
     TypeId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -71,6 +75,11 @@ TrainerModel.init({
         onUpdate: 'SET NULL',
         onDelete: 'SET NULL'
     },
+    ProfileImage: {
+        type: sequelize_1.DataTypes.STRING(256),
+        allowNull: true,
+        defaultValue: null
+    }
 }, {
     sequelize: connection_1.default,
     modelName: "trainer_tbl",

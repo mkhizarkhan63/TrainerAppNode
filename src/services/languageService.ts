@@ -31,13 +31,14 @@ export const deleteUserLangugagesByTrainerId = async (_trainerId: number) => {
     }
 }
 
-export const createUserLanguagesByTrainerId = async (_langaugesIds: number[], _trainerId: number) => {
+export const createUserLanguagesByTrainerId = async (_langaugesIds: string, _trainerId: number) => {
     const transaction = await sequelize?.transaction();
     try {
 
-        for (const item of _langaugesIds) {
+        const languagesIds = _langaugesIds.split(",")
+        for (const item of languagesIds) {
 
-            await UserLanguageModel.create({ LanguageId: item, TrainerId: _trainerId }, { transaction });
+            await UserLanguageModel.create({ LanguageId: parseInt(item), TrainerId: _trainerId }, { transaction });
         }
 
         await transaction.commit();

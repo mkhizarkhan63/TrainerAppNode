@@ -12,9 +12,11 @@ export interface ITrainerProfile {
     LastName: string,
     MobileNumber: string
     DoB: string,
+    ProfileImage: string,
     Nationality: string,
     CountryResidence: string,
-    Gender: string,
+    Location : string,
+    Gender: GenderModel,
     Description: string,
     TypeId: number,
     PersonalTrainingservices: PersonalTrainingServicesModel[],
@@ -22,11 +24,31 @@ export interface ITrainerProfile {
     Languages: LanguageModel[],
     Certificates: CertificateModel[],
     NationalCertificate: UserNationalCertificateModel,
-    SocialLinks: SocialLinkModel[]
+    SocialLinks: SocialLinkModel[],
 }
 
 
-export interface ITrainerProfileCreate {
+
+export interface IClientProfile {
+    Id: number,
+    EmailAddress: string,
+    FirstName: string,
+    LastName: string,
+    MobileNumber: string
+    DoB: string,
+    Nationality: string,
+    CountryResidence: string,
+    Gender: GenderModel,
+    Location : string,
+    // Description: string,
+    TypeId: number,
+    PersonalTrainingservices: PersonalTrainingServicesModel[],
+    Specializations: SpecializationModel[],
+}
+
+
+
+export interface ITrainerProfileDTO {
     Id: number,
     FirstName: string,
     LastName: string,
@@ -34,11 +56,33 @@ export interface ITrainerProfileCreate {
     DoB: string,
     Nationality: string,
     CountryResidence: string,
+    location: string,
     GenderId: number,
     Description: string,
     TypeId: number,
-    PersonalTrainingservices: number[],
-    Specializations: number[],
-    Languages: number[],
-    SocialLinks: string[]
+    PersonalTrainingservices: string,
+    Specializations: string,
+    Languages: string,
+    SocialLinks: string,
+    profilePicture?: string,
+}
+
+
+export interface IClientProfileDTO {
+    Id: number,
+    FirstName: string,
+    LastName: string,
+    MobileNumber: string
+    DoB: string,
+    Nationality: string,
+    CountryResidence: string,
+    location: string,
+    GenderId: number,
+    Description: string,
+    TypeId: number,
+    PersonalTrainingservices: string,
+    Specializations: string,
+    // Languages: string,
+    // SocialLinks: string,
+    profilePicture?: string,
 }

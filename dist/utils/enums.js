@@ -30,4 +30,5 @@ var FolderNames;
     FolderNames["AUDIO"] = "audios";
     FolderNames["CERTIFICATES"] = "certificates";
     FolderNames["NATIONALCERTIFICATES"] = "nationalCertificate";
+    FolderNames["PROFILEPICTURE"] = "profilePictures";
 })(FolderNames || (exports.FolderNames = FolderNames = {}));
