@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import { errorResponse } from '../utils/responseUtils';
 import { getAllGenders } from '../controllers/gendersController';
-import { createOrUpdateTrainerProfile, getClientProfileByClientId, getTrainerProfileByTrainerId } from '../controllers/profileController';
+import { createOrUpdateClientProfile, createOrUpdateTrainerProfile, getClientProfileByClientId, getTrainerProfileByTrainerId } from '../controllers/profileController';
 import { FileUploadController } from '../controllers/fileController';
 import { deleteUserLanguageByLanguageId, getAllLanguages } from '../controllers/languagesController';
 import { createUserPersonalTraining, getAllPersonalTrainingServices, getPersonalTrainerServiceById } from '../controllers/personalTrainingController';
@@ -93,6 +93,15 @@ router.post('/api/createSessions', createSessions);
 router.post('/api/createBookingSession', createBookingSession);
 router.post('/api/updateSessionById', updateSessionById)
 router.post('/api/createPayment', createPayment)
+router.post('/api/createOrUpdateClientProfile', UploadProfilePicture, createOrUpdateClientProfile, (err: any, req: Request, res: Response, next: Function) => {
+    // Handle the error from multer
+    if (err instanceof multer.MulterError) {
+        res.status(400).json(errorResponse(err.message, 400, null));
+    } else if (err) {
+        res.status(400).json(errorResponse(err.message, 400, null));
+    }
+    next();
+});
 //#endregion
 
 

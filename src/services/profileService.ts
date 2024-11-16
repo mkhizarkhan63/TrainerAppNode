@@ -132,7 +132,7 @@ export const getTrainerProfileData = async (_trainerId: number): Promise<ITraine
             DoB: trainer.DoB,
             CountryResidence: trainer.CountryResidence,
             Gender: trainer.Gender,
-            Location : trainer.location,
+            Location: trainer.location,
             MobileNumber: trainer.MobileNumber,
             Nationality: trainer.Nationality,
             Description: trainer.Description,
@@ -277,7 +277,7 @@ export const getClientProfileData = async (_clientId: number) => {
             DoB: client.DoB,
             CountryResidence: client.CountryResidence,
             Gender: client.Gender,
-            Location : client.location,
+            Location: client.location,
             MobileNumber: client.MobileNumber,
             Nationality: client.Nationality,
             TypeId: client.TypeId,
@@ -293,7 +293,6 @@ export const getClientProfileData = async (_clientId: number) => {
 
 export const CreateOrUpdateClientProfileQuery = async (_profile: IClientProfileDTO) => {
     try {
-
         const clientObj: IClientRequestDTO = {
             FirstName: _profile.FirstName,
             LastName: _profile.LastName,

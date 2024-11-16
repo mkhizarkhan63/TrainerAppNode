@@ -85,6 +85,16 @@ router.post('/api/createSessions', sessionsController_1.createSessions);
 router.post('/api/createBookingSession', sessionsController_1.createBookingSession);
 router.post('/api/updateSessionById', sessionsController_1.updateSessionById);
 router.post('/api/createPayment', StripeController_1.createPayment);
+router.post('/api/createOrUpdateClientProfile', UploadProfilePicture_1.UploadProfilePicture, profileController_1.createOrUpdateClientProfile, (err, req, res, next) => {
+    // Handle the error from multer
+    if (err instanceof multer_1.default.MulterError) {
+        res.status(400).json((0, responseUtils_1.errorResponse)(err.message, 400, null));
+    }
+    else if (err) {
+        res.status(400).json((0, responseUtils_1.errorResponse)(err.message, 400, null));
+    }
+    next();
+});
 //#endregion
 //#region  DELETE
 router.delete('/api/deleteUserLanguageByLanguageId', languagesController_1.deleteUserLanguageByLanguageId);
