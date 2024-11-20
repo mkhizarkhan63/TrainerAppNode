@@ -214,7 +214,7 @@ export const CreateOrUpdateTrainerProfileQuery = async (_profile: ITrainerProfil
 //#endregion
 
 //#region  Client
-export const getClientProfileData = async (_clientId: number) => {
+export const getClientProfileData = async (_clientId: number): Promise<IClientProfile | null> => {
     try {
         const client = await ClientModel.findOne({
             where: { Id: _clientId },

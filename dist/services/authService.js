@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.resendOtp = exports.checkotp = exports.login = void 0;
 const AuthModel_1 = __importDefault(require("../models/AuthModel"));
 const otpHandler_1 = require("../utils/otpHandler");
+const clientService_1 = require("./clientService");
+const trainerService_1 = require("./trainerService");
 const login = async (EmailAddress, Password) => {
     try {
         const auth = await AuthModel_1.default.findOne({ where: { EmailAddress, Password } });
@@ -17,7 +19,36 @@ const login = async (EmailAddress, Password) => {
             await (0, otpHandler_1.sendEmailService)(EmailAddress, 'OTP', otp);
             await AuthModel_1.default.update({ OTP: otp, OTPExpires: otpExpires }, { where: { EmailAddress: EmailAddress } });
         }
-        return auth;
+        if (auth) {
+            const loginResponse = {
+                Id: auth.Id,
+                EmailAddress: auth.EmailAddress,
+                IsVerified: auth.IsVerified,
+                ClientId: auth.ClientId,
+                OTP: auth.OTP,
+                OTPExpires: auth.OTPExpires,
+                TrainerId: auth.TrainerId,
+                TypeId: auth.TypeId,
+            };
+            if (auth.TrainerId) {
+                const trainer = await (0, trainerService_1.getTrainerByIdQuery)(auth.TrainerId);
+                loginResponse.FirstName = trainer?.FirstName;
+                loginResponse.LastName = trainer?.LastName;
+                loginResponse.ProfileImage = trainer?.ProfileImage;
+                return loginResponse;
+            }
+            if (auth.ClientId) {
+                const client = await (0, clientService_1.getClientByIdQuery)(auth.ClientId);
+                loginResponse.FirstName = client?.FirstName;
+                loginResponse.LastName = client?.LastName;
+                loginResponse.ProfileImage = client?.ProfileImage;
+                return loginResponse;
+            }
+            return null;
+        }
+        else {
+            return null;
+        }
     }
     catch (error) {
         console.error('Error during login:', error); // Log error

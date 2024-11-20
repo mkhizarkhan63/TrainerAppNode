@@ -15,7 +15,7 @@ const auth = async (req, res) => {
             res.json((0, responseUtils_1.successResponse)("User Not Found", 404));
         }
         if (auth != null) {
-            const { Password, ...userData } = auth.toJSON();
+            const { ...userData } = auth;
             res.json((0, responseUtils_1.successResponse)("Login Successfully", 200, userData));
         }
     }

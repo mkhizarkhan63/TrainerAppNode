@@ -17,7 +17,7 @@ export const auth = async (req: Request, res: Response): Promise<void> => {
         }
 
         if (auth != null) {
-            const { Password, ...userData } = auth.toJSON();
+            const { ...userData } = auth;
             res.json(successResponse("Login Successfully", 200, userData));
         }
 

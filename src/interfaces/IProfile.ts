@@ -5,6 +5,8 @@ import PersonalTrainingServicesModel from "../models/PersonalTrainingServicesMod
 import SpecializationModel from "../models/SpecializationModel"
 import UserNationalCertificateModel from "../models/UserNationalCertificateModel"
 
+
+//#region Get Profile DTOs For Trainer and Client
 export interface ITrainerProfile {
     Id: number,
     EmailAddress: string,
@@ -15,7 +17,7 @@ export interface ITrainerProfile {
     ProfileImage: string,
     Nationality: string,
     CountryResidence: string,
-    Location : string,
+    Location: string,
     Gender: GenderModel,
     Description: string,
     TypeId: number,
@@ -27,8 +29,6 @@ export interface ITrainerProfile {
     SocialLinks: SocialLinkModel[],
 }
 
-
-
 export interface IClientProfile {
     Id: number,
     EmailAddress: string,
@@ -39,14 +39,17 @@ export interface IClientProfile {
     Nationality: string,
     CountryResidence: string,
     Gender: GenderModel,
-    Location : string,
+    Location: string,
     // Description: string,
     TypeId: number,
     PersonalTrainingservices: PersonalTrainingServicesModel[],
     Specializations: SpecializationModel[],
 }
 
+//#endregion
 
+
+//#region Create Profile DTOs For Trainer and Client
 
 export interface ITrainerProfileDTO {
     Id: number,
@@ -86,3 +89,5 @@ export interface IClientProfileDTO {
     // SocialLinks: string,
     profilePicture?: string,
 }
+
+//#endregion
